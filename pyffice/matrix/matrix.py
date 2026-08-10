@@ -481,10 +481,144 @@ class PyfficeMatrix(PyfficeDocumentManager):
 
             self.current_sheet = ws.title
 
+            # T-NEW-066 — extract charts from the worksheet and
+            # populate self.charts. openpyxl exposes charts via
+            # ``ws._charts`` (a list of ``openpyxl.chart._Chart``
+            # subclasses). Each chart is converted to a
+            # ``PyfficeChart`` via the lightweight
+            # ``_chart_from_openpyxl()`` helper below so the
+            # Matrix can render them alongside the cells.
+            self.charts = self._extract_charts_from_worksheet(ws)
+
         except ImportError:
             pyqt.QMessageBox.warning(self, "Error", "openpyxl not installed. Please install: pip install openpyxl")
         except (OSError, KeyError, ValueError) as e:
             pyqt.QMessageBox.warning(self, "Error", f"Failed to load Excel: {e}")
+
+    def _extract_charts_from_worksheet(self, ws):
+        """T-NEW-066: convert openpyxl charts on ``ws`` to
+        ``PyfficeChart`` instances.
+
+        Returns a list of ``PyfficeChart`` objects — empty list
+        when the worksheet has no charts or when openpyxl's
+        chart introspection fails. Defensive: any per-chart
+        failure is logged + skipped so one bad chart doesn't
+        block loading the rest of the workbook.
+
+        The conversion captures the chart type, title, and
+        anchor cell (so the user can re-position on save).
+        Series data extraction is best-effort — openpyxl's
+        ``chart.series`` is heterogeneous across chart types
+        (BarChart, LineChart, PieChart all have different
+        series shapes), so we capture ``series_count`` +
+        the first series' title where present. Full series
+        data round-tripping is a future card.
+        """
+        extracted = []
+        try:
+            openpyxl_charts = getattr(ws, "_charts", []) or []
+            for i, oc in enumerate(openpyxl_charts):
+                try:
+                    chart = self._chart_from_openpyxl(oc, index=i)
+                    if chart is not None:
+                        extracted.append(chart)
+                except Exception as ce:
+                    logma.warning(
+                        f"[PyfficeMatrix] _extract_charts_from_worksheet: "
+                        f"chart #{i} ({type(oc).__name__}) failed: {ce}"
+                    )
+        except Exception as e:
+            logma.warning(
+                f"[PyfficeMatrix] _extract_charts_from_worksheet failed: {e}",
+                exc_info=True,
+            )
+        return extracted
+
+    def _chart_from_openpyxl(self, openpyxl_chart, index=0):
+        """T-NEW-066: convert one ``openpyxl.chart._Chart`` to
+        a ``PyfficeChart``.
+
+        Returns ``None`` when the chart type cannot be mapped
+        (some openpyxl chart types have no PyfficeChart
+        equivalent — e.g. surface charts). The caller
+        (``_extract_charts_from_worksheet``) treats ``None``
+        as "skip this chart" and logs accordingly.
+        """
+        # Type mapping — openpyxl's class name → our string.
+        # ``type(oc).__name__`` returns e.g. "BarChart",
+        # "LineChart", "PieChart", "ScatterChart", etc.
+        oc_class_name = type(openpyxl_chart).__name__
+        # Strip the "Chart" suffix for our short type string
+        # (matches the pattern used elsewhere in pyffice).
+        chart_type = oc_class_name
+        # Title — openpyxl wraps the title in a ``Title``
+        # object; pull the rich text if present.
+        title = None
+        try:
+            if hasattr(openpyxl_chart, "title") and openpyxl_chart.title is not None:
+                title_obj = openpyxl_chart.title
+                if hasattr(title_obj, "tx") and title_obj.tx is not None:
+                    if hasattr(title_obj.tx, "rich") and title_obj.tx.rich is not None:
+                        # rich.p[0].r[0].t is the first text run.
+                        runs = title_obj.tx.rich.p[0].r if title_obj.tx.rich.p else []
+                        if runs and hasattr(runs[0], "t"):
+                            title = runs[0].t
+                if title is None and hasattr(title_obj, "tx") and hasattr(title_obj.tx, "strRef"):
+                    if title_obj.tx.strRef is not None:
+                        title = str(title_obj.tx.strRef.f)
+        except Exception:
+            pass
+        # Anchor — ``anchor.to.col`` / ``anchor.to.row`` /
+        # ``anchor._from.col`` / ``anchor._from.row`` for the
+        # TwoCellAnchor form. openpyxl also supports OneCellAnchor
+        # which lacks the ``to`` field; guard accordingly.
+        position = None
+        try:
+            anchor = getattr(openpyxl_chart, "anchor", None)
+            if anchor is not None:
+                _from = getattr(anchor, "_from", None)
+                if _from is not None:
+                    position = {
+                        "from_col": getattr(_from, "col", None),
+                        "from_row": getattr(_from, "row", None),
+                    }
+                    _to = getattr(anchor, "to", None)
+                    if _to is not None:
+                        position["to_col"] = getattr(_to, "col", None)
+                        position["to_row"] = getattr(_to, "row", None)
+        except Exception:
+            pass
+        # Series count + first-series title (best-effort).
+        series_count = 0
+        first_series_title = None
+        try:
+            series_list = getattr(openpyxl_chart, "series", []) or []
+            series_count = len(series_list)
+            if series_count > 0:
+                s0 = series_list[0]
+                # Series.tx is the title; mirror the title
+                # extraction above.
+                if hasattr(s0, "tx") and s0.tx is not None:
+                    try:
+                        if hasattr(s0.tx, "strRef") and s0.tx.strRef is not None:
+                            first_series_title = str(s0.tx.strRef.f)
+                    except Exception:
+                        pass
+        except Exception:
+            pass
+        # Build the PyfficeChart via the standard constructor
+        # pattern (cfg-based, then load_document).
+        cfg = {
+            "type": chart_type,
+            "title": title,
+            "position": position,
+            "openpyxl_index": index,
+            "series_count": series_count,
+            "first_series_title": first_series_title,
+        }
+        from pyffice.charts.charts import PyfficeChart
+        chart = PyfficeChart(cfg)
+        return chart
 
     def load_from_config(self, cfg) -> None:
         """Load spreadsheet data from configuration"""
