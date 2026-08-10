@@ -281,15 +281,162 @@ class PyfficeChart(PyfficeDocument):
 
     def save_excel(self, path) -> None:
         """Save the document.
-        
+
         Args:
             path: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
         porter = PyfficePortExcel({"parent": self})
         porter.file_export(self, path)
+
+    def load_from_xlsx(
+        self, file_path, chart_index=0, include_data=True,
+    ) -> Self:
+        """T-NEW-067: load a chart directly from an ``.xlsx`` file.
+
+        Companion to ``PyfficeMatrix.load_excel`` (which extracts
+        charts as a side-effect of loading a worksheet). This
+        method is for the case where the user wants to open
+        a chart directly — e.g. double-click a ``.xlsx`` file
+        that contains a chart and the desktop should open a
+        Chart tab, not a Matrix tab.
+
+        Args:
+            file_path: Path to the ``.xlsx`` file.
+            chart_index: Which chart to load (default 0 — the
+                first chart in the active worksheet). Use a
+                higher index to load the N-th chart.
+            include_data: When True (default), also load the
+                underlying worksheet cells into
+                ``self.data``. The user-reported
+                "option to extract chart and data only"
+                requirement (testing-report_20260810.md
+                line 24) is satisfied by this default; pass
+                ``include_data=False`` for chart-only loading.
+
+        Returns:
+            Self for chaining.
+        """
+        try:
+            import openpyxl
+        except ImportError:
+            logma.warning(
+                f"[PyfficeChart] load_from_xlsx: openpyxl not "
+                f"installed; cannot load {file_path}."
+            )
+            return self
+        try:
+            wb = openpyxl.load_workbook(
+                file_path, data_only=False,
+            )
+            ws = wb.active
+            openpyxl_charts = getattr(ws, "_charts", []) or []
+            if not openpyxl_charts:
+                logma.info(
+                    f"[PyfficeChart] load_from_xlsx: {file_path} "
+                    f"has no charts in active sheet; no-op."
+                )
+                return self
+            if chart_index >= len(openpyxl_charts):
+                logma.warning(
+                    f"[PyfficeChart] load_from_xlsx: chart_index="
+                    f"{chart_index} out of range (file has "
+                    f"{len(openpyxl_charts)} charts); defaulting "
+                    f"to chart 0."
+                )
+                chart_index = 0
+            oc = openpyxl_charts[chart_index]
+            # Use the same metadata-extraction pattern as
+            # PyfficeMatrix._chart_from_openpyxl (T-NEW-066).
+            # Inlined here to avoid a cross-module import
+            # cycle (matrix imports from charts).
+            chart_type = type(oc).__name__
+            title = None
+            try:
+                title_obj = getattr(oc, "title", None)
+                if title_obj is not None and getattr(title_obj, "tx", None) is not None:
+                    tx = title_obj.tx
+                    if getattr(tx, "rich", None) is not None and tx.rich.p:
+                        runs = tx.rich.p[0].r
+                        if runs and hasattr(runs[0], "t"):
+                            title = runs[0].t
+                    if title is None and getattr(tx, "strRef", None) is not None:
+                        title = str(tx.strRef.f)
+            except Exception:
+                pass
+            position = None
+            try:
+                anchor = getattr(oc, "anchor", None)
+                if anchor is not None:
+                    _from = getattr(anchor, "_from", None)
+                    if _from is not None:
+                        position = {
+                            "from_col": getattr(_from, "col", None),
+                            "from_row": getattr(_from, "row", None),
+                        }
+                        _to = getattr(anchor, "to", None)
+                        if _to is not None:
+                            position["to_col"] = getattr(_to, "col", None)
+                            position["to_row"] = getattr(_to, "row", None)
+            except Exception:
+                pass
+            series_count = 0
+            first_series_title = None
+            try:
+                series_list = getattr(oc, "series", []) or []
+                series_count = len(series_list)
+                if series_count > 0:
+                    s0 = series_list[0]
+                    if getattr(s0, "tx", None) is not None and getattr(
+                        s0.tx, "strRef", None
+                    ) is not None:
+                        first_series_title = str(s0.tx.strRef.f)
+            except Exception:
+                pass
+            cfg = {
+                "type": chart_type,
+                "title": title,
+                "position": position,
+                "openpyxl_index": chart_index,
+                "series_count": series_count,
+                "first_series_title": first_series_title,
+                "source_file": file_path,
+                "source_sheet": ws.title,
+            }
+            # Delegate to load_document (existing pattern at
+            # line 226) — it reads ``type``, ``data``,
+            # ``figsize``, axes, legends, etc. from cfg.
+            self.load_document(cfg)
+            if include_data:
+                # Load the underlying worksheet cells into
+                # ``self.data`` so the chart tab can show the
+                # data alongside the rendered chart.
+                try:
+                    rows = []
+                    for row in ws.iter_rows(values_only=True):
+                        rows.append([str(c) if c is not None else "" for c in row])
+                    self.data = rows
+                except Exception as de:
+                    logma.warning(
+                        f"[PyfficeChart] load_from_xlsx: data "
+                        f"load failed for {file_path}: {de}"
+                    )
+            logma.info(
+                f"[PyfficeChart] load_from_xlsx: loaded chart "
+                f"#{chart_index} (type={chart_type!r}, "
+                f"title={title!r}) from {file_path}; "
+                f"include_data={include_data}, "
+                f"data_rows={len(self.data) if include_data else 0}."
+            )
+        except (OSError, KeyError, ValueError) as e:
+            logma.warning(
+                f"[PyfficeChart] load_from_xlsx: failed for "
+                f"{file_path}: {e}",
+                exc_info=True,
+            )
+        return self
 
     def save_html(self, path) -> Self:
         """Save chart as HTML file."""
