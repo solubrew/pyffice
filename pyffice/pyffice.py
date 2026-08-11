@@ -44,7 +44,7 @@ from pyffice.web.url import PyfficeURLLibrary
 from pyffice.web.web import PyfficeWebBrowser
 from pyffice.filesystems.filesystems import PyfficeFileSystem
 from pyffice.config.config import PyfficeConfig
-
+from pyffice.updates.updates import PyfficeUpdater
 # ====================================================================================================================||
 here = join(dirname(__file__), "")  # ||
 log = True

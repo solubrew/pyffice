@@ -36,7 +36,6 @@ from pycurity.pyhash import encode64, decode64
 from typing import Any
 from typing_extensions import Self
 
-
 # ====================================================================================================================||
 here = join(dirname(__file__), "")  # ||
 log = False
@@ -138,7 +137,7 @@ class PyfficeImage(PyfficeDocument):
 
     def add_tag(self, tag_name, tag_value) -> Self:
         """Add metadata tag to image."""
-        self.tags = getattr(self, 'tags', {})
+        self.tags = getattr(self, "tags", {})
         self.tags[tag_name] = tag_value
         return self
 
@@ -169,21 +168,23 @@ class PyfficeImage(PyfficeDocument):
         self.thumbnail = self.image.copy()
         self.thumbnail.thumbnail(size)
         return self
+
     def convert_to(self, format) -> None:
         """Convert to.
-        
+
         Args:
             format: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
         match format:
             case ".png":
                 self._convert_to_png()
+
     def del_filter(self, filter_name) -> Self:
         """Remove a filter from the image."""
-        filters = getattr(self, 'filters', [])
+        filters = getattr(self, "filters", [])
         if filter_name in filters:
             filters.remove(filter_name)
         return self
@@ -195,14 +196,14 @@ class PyfficeImage(PyfficeDocument):
 
     def del_layer(self, layer_index) -> Self:
         """Delete a layer by index."""
-        layers = getattr(self, 'layers', [])
+        layers = getattr(self, "layers", [])
         if 0 <= layer_index < len(layers):
             layers.pop(layer_index)
         return self
 
     def del_shape(self, shape_index) -> Self:
         """Delete a shape by index."""
-        shapes = getattr(self, 'shapes', [])
+        shapes = getattr(self, "shapes", [])
         if 0 <= shape_index < len(shapes):
             shapes.pop(shape_index)
         return self
@@ -224,10 +225,14 @@ class PyfficeImage(PyfficeDocument):
 
     def del_text(self, text_index) -> Self:
         """Delete text at specified index."""
-        texts = getattr(self, 'texts', [])
+        texts = getattr(self, "texts", [])
         if 0 <= text_index < len(texts):
             texts.pop(text_index)
         return self
+
+    def extract_palette(self, path=None):
+        """"""
+        # TODO implement palette extraction
 
     def get_image_palette(self) -> Any:
         """
@@ -260,16 +265,18 @@ class PyfficeImage(PyfficeDocument):
 
     def open_file(self, file=None, if_text_only=True) -> Self:
         """Open file.
-        
+
         Args:
             file: Parameter.
             if_text_only: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
         if file is None:
             file = self.file_path
+        if file is None:
+            return self
         self.set_syntax("file")
         if exists(file):
             self.set_file_path(file)
@@ -291,14 +298,15 @@ class PyfficeImage(PyfficeDocument):
 
     def set_content(self, content) -> Self:
         """Set the content.
-        
+
         Args:
             content: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
         from pyffice.pyffice import UnknownLocationError
+
         if content is None:
             return self
         logma.info(f"Content {content}")
@@ -330,10 +338,10 @@ class PyfficeImage(PyfficeDocument):
 
     def set_objects(self, objects) -> Self:
         """Set the objects.
-        
+
         Args:
             objects: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -344,10 +352,10 @@ class PyfficeImage(PyfficeDocument):
 
     def set_palette(self, palette) -> Self:
         """Set the palette.
-        
+
         Args:
             palette: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -373,7 +381,7 @@ class PyfficeImage(PyfficeDocument):
 
     def to_dict(self) -> Self:
         """Convert this document to dict.
-        
+
         Returns:
             Self for chaining.
         """
@@ -385,6 +393,7 @@ class PyfficeImage(PyfficeDocument):
 
 class PyfficeImageManager(PyfficeDocumentManager):
     """"""
+
     SERIALIZATION_VERSION = (1, 0, 0)
 
     def __init__(self, cfg=None) -> None:
@@ -398,10 +407,10 @@ class PyfficeImageManager(PyfficeDocumentManager):
 
     def add_image(self, image) -> Self:
         """Add a image.
-        
+
         Args:
             image: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -411,7 +420,7 @@ class PyfficeImageManager(PyfficeDocumentManager):
 
     def copy_image(self, image) -> Any:
         """Create a copy of the image."""
-        if hasattr(image, 'copy'):
+        if hasattr(image, "copy"):
             return image.copy()
         return None
 
@@ -427,10 +436,10 @@ class PyfficeImageManager(PyfficeDocumentManager):
 
     def load_document(self, document=None) -> Self:
         """Load document into this document.
-        
+
         Args:
             document: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -443,17 +452,17 @@ class PyfficeImageManager(PyfficeDocumentManager):
 
     def move_image(self, image, new_position) -> Self:
         """Move image to new position."""
-        if hasattr(image, 'position'):
+        if hasattr(image, "position"):
             image.position = new_position
         return self
 
     def remove_image(self, image, delete_=False) -> None:
         """Remove the image.
-        
+
         Args:
             image: Parameter.
             delete_: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -463,8 +472,10 @@ class PyfficeImageManager(PyfficeDocumentManager):
         if delete_:
             fonql.remove_file(image.path)
 
+
 class PyfficeScreenShot(PyfficeDocument):
     """"""
+
     SERIALIZATION_VERSION = (1, 0, 0)
 
     def __init__(self, cfg=None) -> None:
@@ -476,10 +487,10 @@ class PyfficeScreenShot(PyfficeDocument):
 
     def load_document(self, document=None) -> Self:
         """Load document into this document.
-        
+
         Args:
             document: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -506,6 +517,7 @@ class PyfficeScreenShot(PyfficeDocument):
         if self.image:
             self.image = self.image.resize((width, height))
         return self
+
 
 # ====================================================================================================================||
 

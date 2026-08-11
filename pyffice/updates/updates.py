@@ -58,6 +58,7 @@ class PyfficeUpdate(object):
         """Create a temporary file."""
         import tempfile
         import os
+
         fd, path = tempfile.mkstemp()
         os.close(fd)
         self.temp_file = path
@@ -123,10 +124,10 @@ class PyfficeDocumentUpdate(PyfficeUpdate):
 
     def process(self, document=None) -> None:
         """Process .
-        
+
         Args:
             document: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -151,7 +152,7 @@ class PyfficeDocumentUpdate(PyfficeUpdate):
 
     def rebuild(self) -> None:
         """Rebuild.
-        
+
         Returns:
             Self for chaining.
         """
@@ -162,11 +163,11 @@ class PyfficeDocumentUpdate(PyfficeUpdate):
 
     def run_adds(self, target, update_data) -> None:
         """Run adds.
-        
+
         Args:
             target: Parameter.
             update_data: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -182,11 +183,11 @@ class PyfficeDocumentUpdate(PyfficeUpdate):
 
     def run_deletes(self, target, update_data) -> None:
         """Run deletes.
-        
+
         Args:
             target: Parameter.
             update_data: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -206,11 +207,11 @@ class PyfficeDocumentUpdate(PyfficeUpdate):
 
     def run_updates(self, target, update_data) -> None:
         """Run updates.
-        
+
         Args:
             target: Parameter.
             update_data: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -233,10 +234,10 @@ class PyfficeDocumentUpdate(PyfficeUpdate):
 
     def update_data(self, update) -> Self:
         """Update data.
-        
+
         Args:
             update: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -250,10 +251,10 @@ class PyfficeDocumentUpdate(PyfficeUpdate):
 
     def update_document(self, update) -> Self:
         """Update document.
-        
+
         Args:
             update: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -267,10 +268,10 @@ class PyfficeDocumentUpdate(PyfficeUpdate):
 
     def update_meta_data(self, update) -> Self:
         """Update meta data.
-        
+
         Args:
             update: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -284,11 +285,11 @@ class PyfficeDocumentUpdate(PyfficeUpdate):
 
     def update_versions(self, version, document_type) -> None:
         """Update versions.
-        
+
         Args:
             version: Parameter.
             document_type: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -342,17 +343,22 @@ class PyfficeUpdater(object):
         """"""
         self.config = kahndor.Instruct(pxcfg).select("PyfficeUpdater").override(cfg)
 
+    def get_document_types(self):
+        """"""
+        # TODO implement real document types from templates in pyffice package
+        return []
+
     def update_document(self) -> Self:
         """Update the document."""
         # Placeholder - would apply updates to document
-        if not hasattr(self, 'document'):
+        if not hasattr(self, "document"):
             return self
         return self
 
     def update_unit(self) -> Self:
         """Update the unit."""
         # Placeholder - would apply updates to unit
-        if not hasattr(self, 'unit'):
+        if not hasattr(self, "unit"):
             return self
         return self
 
