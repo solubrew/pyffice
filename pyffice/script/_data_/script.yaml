@@ -50,6 +50,7 @@ PyfficeScript:
         "bash": [".sh"]
         "html": [".html"]
         "sql": [".sql"]
+        "scad": [".scad"]
 PyfficeParagraph:
     template:
         did:

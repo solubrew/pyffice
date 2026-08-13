@@ -40,22 +40,22 @@ if not log:
 
 # ====================================================================================================================||
 pxcfg = join(here, "_data_", "web.yaml")
+HOMEPAGE = {"url": "https://www.pyffice.com/"}
 
 
-class PyfficeWebBrowser(PyfficeDocument):
+class PyfficeWebBrowser(PyfficeDocumentManager):
     SERIALIZATION_VERSION = (1, 0, 0)
     """"""
 
     def __init__(self, cfg=None) -> None:
         """"""
         super().__init__(cfg)
-        self.config.override(kahndor.Instruct(pxcfg).select("PyfficeWebBrowser")).override(cfg)
-        self.document = self.config.select("template").override(self.config.select("document").dikt)
+        self.config.override(kahndor.Instruct(pxcfg).select("PyfficeWebBrowser").override(cfg))
+        # self.document = self.config.select("template").override(self.config.select("document").dikt) This causes a new generation of uuids probably a good feature to ensure updated schema but need to work on overrides
         self.active_page = None
         self.active_profile = None
         self.home_page = None
         self.library = None
-        # self.page = None
         self.pages = None
         self.profile_manager = None
         self.doc_type = "browser"
@@ -74,9 +74,7 @@ class PyfficeWebBrowser(PyfficeDocument):
         else:
             page = PyfficeWebPage({"page": page})
             page.load_document()
-        if self.pages is None:
-            self.pages = []
-        self.pages.append(page)
+        self.set_next_page(page)
         return self
 
     def add_profile(self, profile) -> Self:
@@ -121,7 +119,15 @@ class PyfficeWebBrowser(PyfficeDocument):
         Returns:
             Self for chaining.
         """
-        return self.pages.get_active_page()
+        return self.active_page
+
+    def get_active_url(self) -> Any:
+        """Return the active page.
+
+        Returns:
+            Self for chaining.
+        """
+        return self.active_page.get_url()
 
     def is_pinned(self) -> Any:
         """Return whether this document is pinned.
@@ -141,16 +147,11 @@ class PyfficeWebBrowser(PyfficeDocument):
             Self for chaining.
         """
         logma.info(f"Load Document {document}")
-        if isinstance(document, str):
-            document = j.loads(document)
-        document = self.document.override(document).dikt
+        document = document or {}
+        document = self.config.override(document).get("document", {}) or {}
         logma.info(f"Load Document {document}")
         super().load_document(document)
-        # self.set_url_home(document.get("home_url", None))
         self.set_page_home(document.get("home_url", None))
-        # url = document.get("data", {}).get("unit", {}).get("original_path", self.home_page.active_url)
-        # logma.info(f"Active {url}")
-        # self.set_url_active(url)
         logma.info(f"URL Home")
         self.set_library(document.get("library", None))
         self.set_profile_manager(document.get("profile_manager", None))
@@ -161,6 +162,26 @@ class PyfficeWebBrowser(PyfficeDocument):
 
     def open_file(self, file=None):
         """"""
+
+    def set_home_page(self, cfg=None):
+        """"""
+        page = self.config.override(cfg).get("home_page", HOMEPAGE)
+        page = PyfficeWebPage({"page": page})
+        self.pages = page
+        return self
+
+    def set_next_page(self, page):
+        """"""
+        self.set_previous_page(page)
+        self.pages = page
+        return self
+
+    def set_previous_page(self, page):
+        """"""
+        if self.pages is None:
+            self.set_home_page()
+        page.previous_page = self.pages
+        return self
 
     def set_library(self, library) -> Self:
         """Set the library.
@@ -439,6 +460,14 @@ class PyfficeWebPage(PyfficeDocument):
             Self for chaining.
         """
         return text_hashing_function(content)
+
+    def get_url(self) -> Any:
+        """"""
+        return self.active_url.get_url()
+
+    def get_url_document(self):
+        """"""
+        return self.active_url
 
     def set_history(self, history, max_items) -> Self:
         """Set the history.

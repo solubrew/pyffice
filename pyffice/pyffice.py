@@ -40,11 +40,12 @@ from pyffice.notebooks.notebooks import PyfficeNotebook
 from pyffice.matrix.matrix import PyfficeMatrix
 from pyffice.script.script import PyfficeScript
 from pyffice.web.prompts import PyfficePromptsManager
-from pyffice.web.url import PyfficeURLLibrary
+from pyffice.web.url import PyfficeURL, PyfficeURLLibrary
 from pyffice.web.web import PyfficeWebBrowser
 from pyffice.filesystems.filesystems import PyfficeFileSystem
 from pyffice.config.config import PyfficeConfig
 from pyffice.updates.updates import PyfficeUpdater
+
 # ====================================================================================================================||
 here = join(dirname(__file__), "")  # ||
 log = True
@@ -377,6 +378,14 @@ class PyfficeCodex(PyfficeDocumentManager):
             self.init_source_manager(cfg)
         self.source = self.source_manager.create_new_source(cfg)
         self.documents[self.source.did] = self.source
+        return self.source
+
+    def init_url(self, cfg: Optional[dict[str, Any]] = None) -> Optional[Any]:
+        """Initialize a data source."""
+        cfg = cfg or {}
+        cfg["codex"] = self
+        url = PyfficeURL(cfg)
+        self.documents[url.did] = url
         return self.source
 
     def load_document(self, document: Optional[dict[str, Any]] = None) -> dict[str, Any]:
