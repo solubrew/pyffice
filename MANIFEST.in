@@ -1,0 +1,21 @@
+# MANIFEST.in — controls what ships in the sdist
+
+recursive-include pyffice *.py
+recursive-include pyffice *.yaml *.yml *.json
+recursive-include docs *.md *.yml
+include README.md LICENSE pyproject.toml CHANGES.md CLI.md CI_CD.md CONTRIBUTING.md mkdocs.yml
+
+recursive-include tests *.py
+
+global-exclude *.pyc *.pyo __pycache__/*
+prune .git
+prune dist
+prune build
+prune .egg-info
+prune .tox
+prune .venv
+prune venvs
+prune htmlcov
+prune .pytest_cache
+prune .mypy_cache
+prune .ruff_cache
