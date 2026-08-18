@@ -36,7 +36,7 @@ pxcfg = join(here, "_data_", ".yaml")
 
 
 class PyfficeSketch(PyfficeDocument):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """A Sketch overlay custom components ontop of a standard image"""
 
     def __init__(self, cfg=None) -> None:
@@ -53,10 +53,10 @@ class PyfficeSketch(PyfficeDocument):
 
     def add_layer(self, layer) -> Self:
         """Add a layer.
-        
+
         Args:
             layer: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -79,10 +79,10 @@ class PyfficeSketch(PyfficeDocument):
 
     def load_document(self, document=None) -> Self:
         """Load document into this document.
-        
+
         Args:
             document: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -117,6 +117,7 @@ class PyfficeSketch(PyfficeDocument):
         """Set nodes."""
         self.nodes = nodes
         return self
+
     def to_md(self) -> Any:
         """Convert to Markdown."""
         # Placeholder - would generate markdown

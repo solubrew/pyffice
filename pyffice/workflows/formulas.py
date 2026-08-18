@@ -30,7 +30,6 @@ from pyffice.document import PyfficeDocumentManager, PyfficeUnit
 from typing import Any
 from typing_extensions import Self
 
-
 # ====================================================================================================================||
 here = join(dirname(__file__), "")  # ||
 log = True
@@ -120,9 +119,7 @@ class BuiltinProtocol(PyfficeFormulaProtocol):
             if m.group("name") is not None:
                 v = parameters.get(m.group("name"))
                 if v is None:
-                    raise ValueError(
-                        f"Missing required parameter {m.group('name')!r}"
-                    )
+                    raise ValueError(f"Missing required parameter {m.group('name')!r}")
                 return repr(v)
             name = m.group("oname")
             return repr(parameters.get(name))
@@ -152,7 +149,7 @@ class BuiltinProtocol(PyfficeFormulaProtocol):
 
 
 class PyfficeFormulasLibrary(PyfficeDocumentManager):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg=None) -> None:
         """Initialize the formulas library and register default protocols."""
@@ -200,16 +197,16 @@ class PyfficeFormulasLibrary(PyfficeDocumentManager):
             # T-NEW-054 (Option B): instantiate each formula with
             # a reference to this library so its parse()/execute()
             # can resolve protocols through self.protocols.
-            self.formulas = {
-                x: PyfficeFormula(y, _library=self) for x, y in formulas.items()
-            }
+            self.formulas = {x: PyfficeFormula(y, _library=self) for x, y in formulas.items()}
         if self.formulas is None:
             self.formulas = {}
         return self
 
+
 class PyfficeFormula(PyfficeUnit):
     """A Functional Formula object for use in various Pyffice Documents"""
-    SERIALIZATION_VERSION = (1, 0, 0)
+
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg=None, _library=None) -> None:
         """"""
@@ -229,11 +226,11 @@ class PyfficeFormula(PyfficeUnit):
 
     def add_parameter(self, parameter, value) -> None:
         """Add a parameter.
-        
+
         Args:
             parameter: Parameter.
             value: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -249,6 +246,7 @@ class PyfficeFormula(PyfficeUnit):
         """
         from pyffice.pyffice import UnknownSyntaxError
         from pyffice.document import PyfficeDocumentManager as _PDM  # noqa: F401
+
         # Find the protocol via the library, or fall back to a
         # fresh BuiltinProtocol if no library is in scope.
         proto = self._resolve_protocol(protocol_name)
@@ -259,14 +257,14 @@ class PyfficeFormula(PyfficeUnit):
     def _resolve_protocol(self, protocol_name: str) -> Any:
         """Return the named protocol, or BuiltinProtocol() as fallback."""
         from pyffice.pyffice import UnknownSyntaxError
+
         # Walk up to find a PyfficeFormulasLibrary if available.
         parent = getattr(self, "_library", None)
         if parent is not None:
             proto = parent.protocols.get(protocol_name)
             if proto is None:
                 raise UnknownSyntaxError(
-                    f"Unknown protocol {protocol_name!r}; "
-                    f"available: {sorted(parent.protocols)}"
+                    f"Unknown protocol {protocol_name!r}; " f"available: {sorted(parent.protocols)}"
                 )
             return proto
         # No library — only the builtin is reachable.
@@ -279,10 +277,10 @@ class PyfficeFormula(PyfficeUnit):
 
     def load_unit(self, unit) -> Self:
         """Load a unit dict into this document.
-        
+
         Args:
             unit: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -309,6 +307,7 @@ class PyfficeFormula(PyfficeUnit):
         Returns the result. If self.parsed is unset, runs parse() first.
         """
         from pyffice.pyffice import InvalidParameterTypeError
+
         proto = self._resolve_protocol(getattr(self, "protocol_name", "builtin"))
         if not hasattr(self, "parsed") or self.parsed is None:
             self.parse()
@@ -319,10 +318,10 @@ class PyfficeFormula(PyfficeUnit):
             for v in self.parameters.values():
                 if not is_number(v) and not isinstance(v, str):
                     raise InvalidParameterTypeError(
-                        f"Non-numeric value in parameters for "
-                        f"{proto.__class__.__name__}: {v!r}"
+                        f"Non-numeric value in parameters for " f"{proto.__class__.__name__}: {v!r}"
                     )
         return proto.execute(self.parsed, dict(self.parameters))
+
 
 class PyfficeFormulaABS(PyfficeFormula):
     """A Functional Formula object for use in various Pyffice Documents"""
@@ -336,7 +335,7 @@ class PyfficeFormulaABS(PyfficeFormula):
 
     def execute(self) -> Any:
         """Execute.
-        
+
         Returns:
             Self for chaining.
         """
@@ -345,11 +344,12 @@ class PyfficeFormulaABS(PyfficeFormula):
 
     def validate(self) -> None:
         """Validate .
-        
+
         Returns:
             Self for chaining.
         """
         from pyffice.pyffice import TooManyParametersError
+
         if len(self.parameters.values()) > 1:
             raise TooManyParametersError("Too Many Parameters")
 
@@ -366,7 +366,7 @@ class PyfficeFormulaSUM(PyfficeFormula):
 
     def execute(self) -> Any:
         """Execute.
-        
+
         Returns:
             Self for chaining.
         """
@@ -375,21 +375,22 @@ class PyfficeFormulaSUM(PyfficeFormula):
 
     def validate(self) -> None:
         """Validate .
-        
+
         Returns:
             Self for chaining.
         """
         from pyffice.pyffice import InvalidParameterTypeError
+
         if len([x for x in self.parameters.values() if not is_number(x)]) > 0:
             raise InvalidParameterTypeError("Non Number Values in Parameters")
 
 
 def is_number(value) -> Any:
     """Return whether this document is number.
-    
+
     Args:
         value: Parameter.
-    
+
     Returns:
         Self for chaining.
     """

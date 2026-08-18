@@ -35,7 +35,6 @@ from pyffice.items.cells import PyfficeCell
 from thingery.numbers.numerals import calcExtendedRomanNumerals, calcArabicNumerals
 from typing_extensions import Self
 
-
 # ====================================================================================================================||
 here = join(dirname(__file__), "")  # ||
 log = True
@@ -46,7 +45,7 @@ pxcfg = join(here, "_data_", "spreadsheet.yaml")
 
 
 class PyfficeSpreadSheet(PyfficeDocument):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """Pyffice SpreadSheet is a single page spreadsheet that can be included in a Pyffice Matrix to create a workbook"""
 
     def __init__(self, cfg=None) -> None:
@@ -69,11 +68,11 @@ class PyfficeSpreadSheet(PyfficeDocument):
 
     def add_cell(self, address, cfg) -> Self:
         """Add a cell.
-        
+
         Args:
             address: Parameter.
             cfg: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -85,15 +84,16 @@ class PyfficeSpreadSheet(PyfficeDocument):
 
     def convert_column(self, column, syntax="arabic") -> Any:
         """Convert column.
-        
+
         Args:
             column: Parameter.
             syntax: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
         from pyffice.pyffice import UnknownSyntaxError
+
         if syntax == "arabic":
             column = calcArabicNumerals(column)
         elif syntax == "roman":
@@ -105,10 +105,10 @@ class PyfficeSpreadSheet(PyfficeDocument):
 
     def evaluate(self, address) -> Self:
         """Evaluate.
-        
+
         Args:
             address: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -117,10 +117,10 @@ class PyfficeSpreadSheet(PyfficeDocument):
 
     def get_cell(self, address) -> Any:
         """Return the cell.
-        
+
         Args:
             address: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -128,10 +128,10 @@ class PyfficeSpreadSheet(PyfficeDocument):
 
     def get_columns(self, count=None) -> Any:
         """Return the columns.
-        
+
         Args:
             count: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -145,6 +145,7 @@ class PyfficeSpreadSheet(PyfficeDocument):
     def get_data(self, filters=None, return_format="table") -> Any:
         """return a dictionary or table of data"""
         from pyffice.pyffice import UnknownReturnFormatError
+
         data = self.data
         if return_format == "table":
             return data
@@ -155,11 +156,11 @@ class PyfficeSpreadSheet(PyfficeDocument):
 
     def get_end_column(self, plus=0, minus=0) -> Self:
         """Return the end column.
-        
+
         Args:
             plus: Parameter.
             minus: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -168,11 +169,11 @@ class PyfficeSpreadSheet(PyfficeDocument):
 
     def get_end_row(self, plus=0, minus=0) -> Any:
         """Return the end row.
-        
+
         Args:
             plus: Parameter.
             minus: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -180,10 +181,10 @@ class PyfficeSpreadSheet(PyfficeDocument):
 
     def get_formula(self, address) -> Any:
         """Return the formula.
-        
+
         Args:
             address: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -208,15 +209,14 @@ class PyfficeSpreadSheet(PyfficeDocument):
             except ValueError:
                 continue
             rows.setdefault(row_idx, {})[col] = cell
-        return [{"row": idx, "cells": cells}
-                for idx, cells in sorted(rows.items())]
+        return [{"row": idx, "cells": cells} for idx, cells in sorted(rows.items())]
 
     def load_document(self, document=None) -> Self:
         """Load document into this document.
-        
+
         Args:
             document: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -233,13 +233,13 @@ class PyfficeSpreadSheet(PyfficeDocument):
 
     def set_cell(self, address, value, format=None, formula=None) -> Self:
         """Set the cell.
-        
+
         Args:
             address: Parameter.
             value: Parameter.
             format: Parameter.
             formula: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -265,11 +265,11 @@ class PyfficeSpreadSheet(PyfficeDocument):
 
     def set_column_labels(self, labels=None, widths=None) -> Self:
         """Set the column labels.
-        
+
         Args:
             labels: Parameter.
             widths: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -282,15 +282,16 @@ class PyfficeSpreadSheet(PyfficeDocument):
 
     def set_column_width(self, column, width) -> Self:
         """Set the column width.
-        
+
         Args:
             column: Parameter.
             width: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
         from pyffice.pyffice import ColumnNotFoundError
+
         if column not in self.column_labels:
             raise ColumnNotFoundError(f"Column {column} not found")
         if int(width) != self.column_labels[column]:
@@ -306,10 +307,10 @@ class PyfficeSpreadSheet(PyfficeDocument):
 
     def set_data(self, data) -> Self:
         """Set the data.
-        
+
         Args:
             data: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -338,10 +339,10 @@ class PyfficeSpreadSheet(PyfficeDocument):
 
     def set_row_labels(self, labels=None) -> Self:
         """Set the row labels.
-        
+
         Args:
             labels: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -352,10 +353,10 @@ class PyfficeSpreadSheet(PyfficeDocument):
 
     def set_size(self, size) -> Self:
         """Set the size.
-        
+
         Args:
             size: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -379,19 +380,21 @@ class PyfficeSpreadSheet(PyfficeDocument):
 
     def to_dict(self) -> Self:
         """Convert this document to dict.
-        
+
         Returns:
             Self for chaining.
         """
         doc = super().to_dict()
         doc["data"]["document_type"] = "sheet"
-        self._ensure_init_state({
-            "cells": {},
-            "tables": [],
-            "charts": [],
-            "images": [],
-            "shapes": [],
-        })
+        self._ensure_init_state(
+            {
+                "cells": {},
+                "tables": [],
+                "charts": [],
+                "images": [],
+                "shapes": [],
+            }
+        )
         doc["data"]["cells"] = {x: cell.to_dict() for x, cell in self.cells.items()}
         doc["data"]["objects"] = {
             "tables": [x.to_dict() for x in self.tables],

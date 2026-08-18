@@ -47,7 +47,7 @@ pxcfg = join(here, "_data_", "colors.yaml")
 
 
 class PyfficeColor(PyfficeUnit):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """
     PyfficeColor provides utilities for working with various color formats.
 
@@ -179,10 +179,10 @@ class PyfficeColor(PyfficeUnit):
 
     def load_unit(self, unit=None) -> Self:
         """Load a unit dict into this document.
-        
+
         Args:
             unit: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -247,10 +247,10 @@ class PyfficeColor(PyfficeUnit):
 
     def set_hsl(self, value) -> None:
         """Set the hsl.
-        
+
         Args:
             value: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -292,10 +292,10 @@ class PyfficeColor(PyfficeUnit):
 
     def set_color_name(self, value) -> Self:
         """Set the color name.
-        
+
         Args:
             value: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -352,10 +352,10 @@ class PyfficeColor(PyfficeUnit):
     @staticmethod
     def rgb_to_cmyk(rgb) -> Any:
         """Rgb to cmyk.
-        
+
         Args:
             rgb: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -371,10 +371,10 @@ class PyfficeColor(PyfficeUnit):
     @staticmethod
     def rgb_to_hex(rgb) -> Any:
         """Rgb to hex.
-        
+
         Args:
             rgb: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -458,10 +458,10 @@ class PyfficeColor(PyfficeUnit):
     @staticmethod
     def hsv_to_rgb(hsv) -> Any:
         """Hsv to rgb.
-        
+
         Args:
             hsv: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -471,10 +471,10 @@ class PyfficeColor(PyfficeUnit):
     @staticmethod
     def xyz_to_lab(xyz) -> Any:
         """Xyz to lab.
-        
+
         Args:
             xyz: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -486,10 +486,10 @@ class PyfficeColor(PyfficeUnit):
     def xyz_to_rgb(xyz) -> Any:
         # Use colormath to convert XYZ → sRGB
         """Xyz to rgb.
-        
+
         Args:
             xyz: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -503,6 +503,8 @@ class PyfficeColor(PyfficeUnit):
                 srgb_color.clamped_rgb_b,
             )
         )
+
+
 def calculate_hsl_complementary(h, s, l) -> Any:
     """
     Calculate complementary color using HSL model.

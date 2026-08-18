@@ -36,7 +36,7 @@ pxcfg = join(here, "_data_", "bibliographies.yaml")
 
 
 class PyfficeBibliography(PyfficeDocument):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """"""
 
     def __init__(self, cfg=None) -> None:
@@ -48,10 +48,10 @@ class PyfficeBibliography(PyfficeDocument):
 
     def add_reference(self, cfg=None) -> Self:
         """Add a reference.
-        
+
         Args:
             cfg: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -62,10 +62,10 @@ class PyfficeBibliography(PyfficeDocument):
 
     def del_reference(self, index) -> Self:
         """Remove a reference from this document.
-        
+
         Args:
             index: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -75,7 +75,7 @@ class PyfficeBibliography(PyfficeDocument):
 
     def del_references(self) -> Self:
         """Remove the references.
-        
+
         Returns:
             Self for chaining.
         """
@@ -85,10 +85,10 @@ class PyfficeBibliography(PyfficeDocument):
 
     def get_reference(self, index) -> Any:
         """Return the reference.
-        
+
         Args:
             index: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -96,10 +96,10 @@ class PyfficeBibliography(PyfficeDocument):
 
     def load_document(self, document=None) -> Self:
         """Load document into this document.
-        
+
         Args:
             document: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -115,10 +115,10 @@ class PyfficeBibliography(PyfficeDocument):
 
     def set_references(self, references) -> Self:
         """Set the references.
-        
+
         Args:
             references: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -137,6 +137,7 @@ class PyfficeBibliography(PyfficeDocument):
             Self for chaining.
         """
         return self._set_with_change("style", style)
+
 
 # ====================================================================================================================||
 

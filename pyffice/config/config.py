@@ -35,7 +35,7 @@ pxcfg = join(here, "_data_", "pyffice.yaml")
 
 
 class PyfficeConfig(PyfficeDocument):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """"""
 
     def __init__(self, cfg=None, parent=None) -> None:

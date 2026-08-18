@@ -13,6 +13,7 @@
 """
 
 from typing_extensions import Self
+
 # -*- coding: utf-8 -*
 # ======================================Standard Library Modules======================================================||
 from os.path import abspath, dirname, join
@@ -39,7 +40,7 @@ PXCFG = join(HERE, "_data_", ".yaml")
 
 
 class PyfficeTextDocument(PyfficeDocument):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """Text document with full formatting support."""
 
     def __init__(self, cfg=None) -> None:
@@ -117,7 +118,9 @@ class PyfficeTextDocument(PyfficeDocument):
         Returns:
             Self for chaining.
         """
-        logma.debug(f"PyfficeTextDocument.load_document called for {document.get('did', '?') if isinstance(document, dict) else '?'}")
+        logma.debug(
+            f"PyfficeTextDocument.load_document called for {document.get('did', '?') if isinstance(document, dict) else '?'}"
+        )
         super().load_document(document)
         if not isinstance(document, dict):
             return self
@@ -147,6 +150,7 @@ class PyfficeTextDocument(PyfficeDocument):
         """
         import json as _json
         from os.path import exists
+
         if file_ is None:
             file_ = self.file_path
         if not file_ or not exists(file_):
@@ -180,6 +184,7 @@ class PyfficeTextDocument(PyfficeDocument):
             logma.warning("PyfficeTextDocument.save: no path available")
             return
         import json as _json
+
         doc = self.to_dict()
         with open(path, "w") as f:
             _json.dump(doc, f, indent=2, default=str)

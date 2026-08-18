@@ -35,7 +35,7 @@ pxcfg = join(here, "_data_", "notebooks.yaml")
 
 
 class PyfficeNotebook(PyfficeDocument):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """"""
 
     def __init__(self, cfg=None) -> None:
@@ -47,10 +47,10 @@ class PyfficeNotebook(PyfficeDocument):
 
     def add_cell(self, cell) -> Self:
         """Add a cell.
-        
+
         Args:
             cell: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -59,10 +59,10 @@ class PyfficeNotebook(PyfficeDocument):
 
     def clear_cell(self, dex) -> Self:
         """Clear cell.
-        
+
         Args:
             dex: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -71,7 +71,7 @@ class PyfficeNotebook(PyfficeDocument):
 
     def clear_cells(self) -> Self:
         """Clear cells.
-        
+
         Returns:
             Self for chaining.
         """
@@ -81,10 +81,10 @@ class PyfficeNotebook(PyfficeDocument):
 
     def del_cell(self, dex) -> Self:
         """Remove the cell.
-        
+
         Args:
             dex: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -93,10 +93,10 @@ class PyfficeNotebook(PyfficeDocument):
 
     def load_document(self, document=None) -> Self:
         """Load document into this document.
-        
+
         Args:
             document: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -112,10 +112,10 @@ class PyfficeNotebook(PyfficeDocument):
 
     def set_cells(self, cells) -> Self:
         """Set the cells.
-        
+
         Args:
             cells: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -126,11 +126,11 @@ class PyfficeNotebook(PyfficeDocument):
 
     def set_cell_source(self, text, position=0) -> Self:
         """Set the cell source.
-        
+
         Args:
             text: Parameter.
             position: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -141,10 +141,10 @@ class PyfficeNotebook(PyfficeDocument):
 
     def set_notebook(self, notebook=None) -> Self:
         """Set the notebook.
-        
+
         Args:
             notebook: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -161,9 +161,10 @@ class PyfficeNotebook(PyfficeDocument):
         """Set pinned state."""
         self.pinned = pinned
         return self
+
     def to_html(self) -> Self:
         """Convert this document to html.
-        
+
         Returns:
             Self for chaining.
         """

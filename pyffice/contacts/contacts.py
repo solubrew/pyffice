@@ -37,7 +37,7 @@ pxcfg = join(here, "_data_", "contacts.yaml")
 
 
 class PyfficeAddress(PyfficeDocument):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """"""
 
     def __init__(self, cfg=None) -> None:
@@ -54,11 +54,11 @@ class PyfficeAddress(PyfficeDocument):
     @classmethod
     def from_dict(cls, dikt) -> Any:
         """From dict.
-        
+
         Args:
             cls: Parameter.
             dikt: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -68,7 +68,8 @@ class PyfficeAddress(PyfficeDocument):
 
 class PyfficeContact(PyfficeDocument):
     """"""
-    SERIALIZATION_VERSION = (1, 0, 0)
+
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg=None) -> None:
         """"""
@@ -104,10 +105,10 @@ class PyfficeContact(PyfficeDocument):
 
     def add_address(self, address) -> None:
         """Add a address.
-        
+
         Args:
             address: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -124,10 +125,10 @@ class PyfficeContact(PyfficeDocument):
 
     def add_email_address(self, email) -> Self:
         """Add a email address.
-        
+
         Args:
             email: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -139,10 +140,10 @@ class PyfficeContact(PyfficeDocument):
 
     def add_emergency_contact(self, contact: "PyfficeContact") -> None:
         """Add a emergency contact.
-        
+
         Args:
             contact: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -150,10 +151,10 @@ class PyfficeContact(PyfficeDocument):
 
     def add_group(self, group) -> Self:
         """Add a group.
-        
+
         Args:
             group: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -164,10 +165,10 @@ class PyfficeContact(PyfficeDocument):
 
     def add_phone_address(self, phone) -> Self:
         """Add a phone address.
-        
+
         Args:
             phone: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -181,10 +182,10 @@ class PyfficeContact(PyfficeDocument):
 
     def add_postal_address(self, postal) -> Self:
         """Add a postal address.
-        
+
         Args:
             postal: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -196,11 +197,11 @@ class PyfficeContact(PyfficeDocument):
 
     def add_social_contact(self, handle, social_network) -> Self:
         """Add a social contact.
-        
+
         Args:
             handle: Parameter.
             social_network: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -234,8 +235,7 @@ class PyfficeContact(PyfficeDocument):
 
     def del_add_phone_address(self, phone) -> Self:
         """Remove phone-type channels whose value matches phone."""
-        kept = [c for c in self.channels
-                if not (c.get("type") == "phone" and c.get("contact") == phone)]
+        kept = [c for c in self.channels if not (c.get("type") == "phone" and c.get("contact") == phone)]
         if kept != self.channels:
             self.add_change("channels", self.channels, kept)
             self.channels = kept
@@ -243,8 +243,7 @@ class PyfficeContact(PyfficeDocument):
 
     def del_postal_address(self, address) -> Self:
         """Remove postal-address channels whose value matches address."""
-        kept = [c for c in self.channels
-                if not (c.get("type") == "postal_address" and c.get("contact") == address)]
+        kept = [c for c in self.channels if not (c.get("type") == "postal_address" and c.get("contact") == address)]
         if kept != self.channels:
             self.add_change("channels", self.channels, kept)
             self.channels = kept
@@ -252,8 +251,7 @@ class PyfficeContact(PyfficeDocument):
 
     def del_social_contact(self, contact) -> Self:
         """Remove social-type channels whose handle matches contact."""
-        kept = [c for c in self.channels
-                if not (c.get("type") == "social" and c.get("contact") == contact)]
+        kept = [c for c in self.channels if not (c.get("type") == "social" and c.get("contact") == contact)]
         if kept != self.channels:
             self.add_change("channels", self.channels, kept)
             self.channels = kept
@@ -261,7 +259,7 @@ class PyfficeContact(PyfficeDocument):
 
     def connect_contact(self) -> Any:
         """Connect contact.
-        
+
         Returns:
             Self for chaining.
         """
@@ -284,10 +282,10 @@ class PyfficeContact(PyfficeDocument):
 
     def load_document(self, document=None) -> Self:
         """Load document into this document.
-        
+
         Args:
             document: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -302,10 +300,10 @@ class PyfficeContact(PyfficeDocument):
 
     def set_channels(self, document) -> Self:
         """Set the channels.
-        
+
         Args:
             document: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -322,10 +320,10 @@ class PyfficeContact(PyfficeDocument):
 
     def set_groups(self, groups) -> Self:
         """Set the groups.
-        
+
         Args:
             groups: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -338,10 +336,10 @@ class PyfficeContact(PyfficeDocument):
 
     def set_name_first(self, name) -> Self:
         """Set the name first.
-        
+
         Args:
             name: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -352,10 +350,10 @@ class PyfficeContact(PyfficeDocument):
 
     def set_name_full(self, name) -> Self:
         """Set the name full.
-        
+
         Args:
             name: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -366,10 +364,10 @@ class PyfficeContact(PyfficeDocument):
 
     def set_name_middle(self, name) -> Self:
         """Set the name middle.
-        
+
         Args:
             name: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -380,10 +378,10 @@ class PyfficeContact(PyfficeDocument):
 
     def set_name_nicknames(self, nicknames) -> Self:
         """Set the name nicknames.
-        
+
         Args:
             nicknames: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -394,10 +392,10 @@ class PyfficeContact(PyfficeDocument):
 
     def set_name_last(self, name) -> Self:
         """Set the name last.
-        
+
         Args:
             name: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -408,10 +406,10 @@ class PyfficeContact(PyfficeDocument):
 
     def set_name_preferred(self, name) -> Self:
         """Set the name preferred.
-        
+
         Args:
             name: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -422,10 +420,10 @@ class PyfficeContact(PyfficeDocument):
 
     def set_name_sur(self, name) -> Self:
         """Set the name sur.
-        
+
         Args:
             name: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -443,10 +441,10 @@ class PyfficeContact(PyfficeDocument):
 
     def set_name_suffix(self, name) -> Self:
         """Set the name suffix.
-        
+
         Args:
             name: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -457,10 +455,10 @@ class PyfficeContact(PyfficeDocument):
 
     def set_names(self, names) -> Self:
         """Set the names.
-        
+
         Args:
             names: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -484,10 +482,10 @@ class PyfficeContact(PyfficeDocument):
 
     def set_preferred_channel(self, channel) -> Self:
         """Set the preferred channel.
-        
+
         Args:
             channel: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -498,7 +496,7 @@ class PyfficeContact(PyfficeDocument):
 
     def to_dict(self) -> Self:
         """Convert this document to dict.
-        
+
         Returns:
             Self for chaining.
         """
@@ -522,10 +520,10 @@ class PyfficeContact(PyfficeDocument):
 
     def verify_phone_number(self, phone) -> Self:
         """Verify phone number.
-        
+
         Args:
             phone: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -536,10 +534,10 @@ class PyfficeContact(PyfficeDocument):
 
     def verify_email(self, email) -> Self:
         """Verify email.
-        
+
         Args:
             email: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -550,10 +548,10 @@ class PyfficeContact(PyfficeDocument):
 
     def verify_postal_address(self, address) -> Self:
         """Verify postal address.
-        
+
         Args:
             address: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -569,7 +567,8 @@ class PyfficeContact(PyfficeDocument):
 
 class PyfficeRolodex(PyfficeDocumentManager):
     """"""
-    SERIALIZATION_VERSION = (1, 0, 0)
+
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg=None) -> None:
         """"""
@@ -581,11 +580,11 @@ class PyfficeRolodex(PyfficeDocumentManager):
 
     def add_contact(self, contact, group=None) -> Self:
         """Add a contact.
-        
+
         Args:
             contact: Parameter.
             group: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -600,10 +599,10 @@ class PyfficeRolodex(PyfficeDocumentManager):
 
     def add_group(self, group) -> Self:
         """Add a group.
-        
+
         Args:
             group: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -613,10 +612,10 @@ class PyfficeRolodex(PyfficeDocumentManager):
 
     def del_contact(self, name) -> Self:
         """Remove the contact.
-        
+
         Args:
             name: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -637,7 +636,7 @@ class PyfficeRolodex(PyfficeDocumentManager):
 
     def get_count(self) -> Any:
         """Return the count.
-        
+
         Returns:
             Self for chaining.
         """
@@ -645,10 +644,10 @@ class PyfficeRolodex(PyfficeDocumentManager):
 
     def get_group_by_name(self, name) -> Any:
         """Return the group by name.
-        
+
         Args:
             name: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -657,10 +656,10 @@ class PyfficeRolodex(PyfficeDocumentManager):
 
     def load_document(self, document=None) -> Self:
         """Load document into this document.
-        
+
         Args:
             document: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -677,10 +676,10 @@ class PyfficeRolodex(PyfficeDocumentManager):
 
     def set_contacts(self, contacts) -> Self:
         """Set the contacts.
-        
+
         Args:
             contacts: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -697,10 +696,10 @@ class PyfficeRolodex(PyfficeDocumentManager):
 
     def set_group_default(self, group=None) -> Self:
         """Set the group default.
-        
+
         Args:
             group: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -713,10 +712,10 @@ class PyfficeRolodex(PyfficeDocumentManager):
 
     def set_groups(self, groups) -> Self:
         """Set the groups.
-        
+
         Args:
             groups: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -726,6 +725,7 @@ class PyfficeRolodex(PyfficeDocumentManager):
             self.add_change("groups", self.groups, groups)
             self.groups = groups
         return self
+
 
 # ====================================================================================================================||
 

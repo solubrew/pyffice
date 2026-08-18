@@ -119,7 +119,7 @@ class MissingPathError(PyfficeCodexError):
 
 class PyfficeCodex(PyfficeDocumentManager):
     """A Pyffice Book is a container that can hold multiple instances and types of Pyffice Top Level Documents
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     AI Agent Enhanced:
         - to_yaml() -> str: Convert entire codex to YAML string
@@ -129,7 +129,7 @@ class PyfficeCodex(PyfficeDocumentManager):
     """
 
     VERSION: str = "0.0.1.0.1.0"
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg: Optional[dict[str, Any]] = None) -> None:
         """Initialize PyfficeCodex with optional configuration."""
@@ -238,6 +238,14 @@ class PyfficeCodex(PyfficeDocumentManager):
         cfg = cfg or {}
         cfg["codex"] = self
         config = PyfficeConfig(cfg)
+        self.documents[config.did] = config
+        return config
+
+    def init_web_config(self, cfg: Optional[dict[str, Any]] = None) -> Optional[Any]:
+        """Initialize a note document."""
+        cfg = cfg or {}
+        cfg["codex"] = self
+        config = PyfficeWebConfig(cfg)
         self.documents[config.did] = config
         return config
 

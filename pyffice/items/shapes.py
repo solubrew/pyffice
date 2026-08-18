@@ -36,7 +36,7 @@ pxcfg = join(here, "_data_", "shapes.yaml")
 
 
 class PyfficeShape(PyfficeUnit):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """"""
 
     def __init__(self, cfg=None) -> None:
@@ -52,10 +52,10 @@ class PyfficeShape(PyfficeUnit):
 
     def add_shape(self, shape) -> Self:
         """Add a shape.
-        
+
         Args:
             shape: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -65,11 +65,11 @@ class PyfficeShape(PyfficeUnit):
 
     def add_text(self, text, position=None) -> Self:
         """Add a text.
-        
+
         Args:
             text: Parameter.
             position: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -83,10 +83,10 @@ class PyfficeShape(PyfficeUnit):
 
     def load_unit(self, unit=None) -> Self:
         """Load a unit dict into this document.
-        
+
         Args:
             unit: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -102,10 +102,10 @@ class PyfficeShape(PyfficeUnit):
 
     def mirror_shape(self, axis) -> Self:
         """Mirror shape.
-        
+
         Args:
             axis: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -119,7 +119,7 @@ class PyfficeShape(PyfficeUnit):
 
     def mirror_text(self) -> Self:
         """Mirror text horizontally."""
-        self.text_flipped = not getattr(self, 'text_flipped', False)
+        self.text_flipped = not getattr(self, "text_flipped", False)
         return self
 
     def move_shape(self, x, y) -> Self:
@@ -149,11 +149,11 @@ class PyfficeShape(PyfficeUnit):
 
     def set_background(self, background, item=Self) -> Self:
         """Set the background.
-        
+
         Args:
             background: Parameter.
             item: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -173,10 +173,10 @@ class PyfficeShape(PyfficeUnit):
 
     def set_origin(self, origin) -> Self:
         """Set the origin.
-        
+
         Args:
             origin: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -189,10 +189,10 @@ class PyfficeShape(PyfficeUnit):
 
     def set_shapes(self, shapes) -> Self:
         """Set the shapes.
-        
+
         Args:
             shapes: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -223,10 +223,10 @@ class PyfficeShape(PyfficeUnit):
 
     def set_size(self, size) -> Self:
         """Set the size.
-        
+
         Args:
             size: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -236,6 +236,7 @@ class PyfficeShape(PyfficeUnit):
         corner = [self.origin[0] + self.size[0], self.origin[1] + self.size[1]]
         self._set_envelope(self.origin, corner)
         return self
+
     def _set_envelope(self, top_left, bottom_right) -> Self:
         """"""
         self.origin = top_left

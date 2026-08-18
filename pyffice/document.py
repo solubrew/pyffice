@@ -60,7 +60,7 @@ class PyfficeUnit(object):
     # receiving side reads ``meta_data["schema_version"]``
     # from the payload and dispatches upgrade paths by
     # comparing this triple to the producer's triple.
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg=None) -> None:
         """"""
@@ -850,7 +850,7 @@ class PyfficeUnit(object):
 class PyfficeDocument(PyfficeUnit):
     """"""
 
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg=None) -> None:
         """"""
@@ -1382,7 +1382,7 @@ class PyfficeDocument(PyfficeUnit):
 class PyfficeDocumentManager(PyfficeDocument):
     """"""
 
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg=None) -> None:
         """"""
@@ -1513,7 +1513,7 @@ class PyfficeDocumentManager(PyfficeDocument):
 class PyfficeDeque(PyfficeDocument, deque):
     """"""
 
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg=None) -> None:
         """"""

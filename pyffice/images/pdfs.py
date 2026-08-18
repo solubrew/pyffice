@@ -31,7 +31,6 @@ from pyffice.document import PyfficeDocument, PyfficeDocumentManager
 from typing import Any
 from typing_extensions import Self
 
-
 # ====================================================================================================================||
 here = join(dirname(__file__), "")  # ||
 log = False
@@ -43,7 +42,7 @@ pxcfg = join(here, "_data_", "pdfs.yaml")
 
 
 class PyfficePDF(PyfficeDocument):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """
     A class to work with PDF files using PyPDF2, supporting
     annotations, embedded media, and encryption.
@@ -101,7 +100,7 @@ class PyfficePDF(PyfficeDocument):
 
     def edit(self) -> Self:
         """Edit.
-        
+
         Returns:
             Self for chaining.
         """
@@ -188,7 +187,7 @@ class PyfficePDF(PyfficeDocument):
 
     def initialize_writer(self) -> Self:
         """Initialize writer.
-        
+
         Returns:
             Self for chaining.
         """
@@ -198,10 +197,10 @@ class PyfficePDF(PyfficeDocument):
 
     def load_document(self, document=None) -> Self:
         """Load document into this document.
-        
+
         Args:
             document: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -224,10 +223,10 @@ class PyfficePDF(PyfficeDocument):
 
     def open_file(self, file_=None) -> Self:
         """Open file.
-        
+
         Args:
             file_: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -244,10 +243,10 @@ class PyfficePDF(PyfficeDocument):
 
     def open_file_full_feature(self, file_) -> Self:
         """Open file full feature.
-        
+
         Args:
             file_: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -256,10 +255,10 @@ class PyfficePDF(PyfficeDocument):
 
     def open_file_no_javascript(self, file_) -> Self:
         """Open file no javascript.
-        
+
         Args:
             file_: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -292,14 +291,15 @@ class PyfficePDF(PyfficeDocument):
 
     def set_content(self, content) -> Self:
         """Set the content.
-        
+
         Args:
             content: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
         from pyffice.pyffice import UnknownLocationError
+
         logma.info(f"Content {content}")
         if self.location is None:
             self.set_location(None)
@@ -320,7 +320,7 @@ class PyfficePDF(PyfficeDocument):
 
     def to_dict(self) -> Self:
         """Convert this document to dict.
-        
+
         Returns:
             Self for chaining.
         """

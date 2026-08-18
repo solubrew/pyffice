@@ -38,7 +38,7 @@ pxcfg = join(here, "_data_", "prompts.yaml")
 
 
 class PyfficeContext(PyfficeDocument):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """"""
 
     def __init__(self, cfg=None) -> None:
@@ -61,6 +61,7 @@ class PyfficeContext(PyfficeDocument):
     def open_file(self, file_=None):
         import json as _json
         from os.path import exists
+
         if file_ is None:
             file_ = self.file_path
         if not file_ or not exists(file_):
@@ -83,6 +84,7 @@ class PyfficeContext(PyfficeDocument):
             logma.warning(f"{self.__class__.__name__}.save: no path available")
             return
         import json as _json
+
         doc = self.to_dict()
         with open(path, "w") as f:
             _json.dump(doc, f, indent=2, default=str)
@@ -108,7 +110,7 @@ class PyfficeContext(PyfficeDocument):
 class PyfficePrompt(PyfficeDocument):
     """"""
 
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg=None) -> None:
         """"""
@@ -346,7 +348,7 @@ class PyfficePrompt(PyfficeDocument):
 class PyfficeResponse(PyfficeDocument):
     """"""
 
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg=None) -> None:
         """"""
@@ -381,7 +383,7 @@ class PyfficeResponse(PyfficeDocument):
 class PyfficePromptsManager(PyfficeDocumentManager):
     """"""
 
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg=None) -> None:
         """"""

@@ -159,7 +159,7 @@ class PyfficeParagraph:
 
 
 class PyfficeText(PyfficeUnit):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """Pyffice Text object consists of one string of text that can be formated in various ways by setting the selections"""
 
     def __init__(self, cfg=None) -> None:
@@ -181,10 +181,10 @@ class PyfficeText(PyfficeUnit):
 
     def load_unit(self, unit=None) -> Self:
         """Load a unit dict into this document.
-        
+
         Args:
             unit: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -205,11 +205,11 @@ class PyfficeText(PyfficeUnit):
 
     def set_alignment(self, horizontal=None, vertical=None) -> Self:
         """Set the alignment.
-        
+
         Args:
             horizontal: Parameter.
             vertical: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -223,10 +223,10 @@ class PyfficeText(PyfficeUnit):
 
     def set_data_format(self, data_format) -> Self:
         """Set the data format.
-        
+
         Args:
             data_format: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -260,10 +260,10 @@ class PyfficeText(PyfficeUnit):
 
     def set_font_color(self, font=None) -> Self:
         """Set the font color.
-        
+
         Args:
             font: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -277,10 +277,10 @@ class PyfficeText(PyfficeUnit):
 
     def set_color_background(self, font) -> Self:
         """Set the color background.
-        
+
         Args:
             font: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -294,10 +294,10 @@ class PyfficeText(PyfficeUnit):
 
     def set_color_foreground(self, font) -> Self:
         """Set the color foreground.
-        
+
         Args:
             font: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -311,10 +311,10 @@ class PyfficeText(PyfficeUnit):
 
     def set_html(self, value) -> Self:
         """Set the html.
-        
+
         Args:
             value: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -325,10 +325,10 @@ class PyfficeText(PyfficeUnit):
 
     def set_text(self, text) -> Self:
         """Set the text.
-        
+
         Args:
             text: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -336,9 +336,10 @@ class PyfficeText(PyfficeUnit):
             self.add_change("value", self.value, text)
             self.value = text
         return self
+
     def to_html(self) -> Any:
         """Convert this document to html.
-        
+
         Returns:
             Self for chaining.
         """
@@ -386,7 +387,8 @@ class PyfficeHTML(PyfficeText):
 
 class PyfficePage(PyfficeUnit):
     """"""
-    SERIALIZATION_VERSION = (1, 0, 0)
+
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     VERSION = "0.0.1.0.1.0"
 

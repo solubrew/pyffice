@@ -59,7 +59,7 @@ pxcfg = join(here, "../config/_data_", ".yaml")
 
 
 class PyfficePort(PyfficeDocumentManager):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """"""
 
     def __init__(self, cfg=None) -> None:

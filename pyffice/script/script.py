@@ -34,7 +34,8 @@ from typing_extensions import Self
 # ====================================================================================================================||
 here = join(dirname(__file__), "")  # ||
 logma = Logma(__name__)
-log = False
+log = True
+debug = True
 if not log:
     logma.off()
 
@@ -43,13 +44,12 @@ pxcfg = join(here, "_data_", "script.yaml")
 
 
 class PyfficeScript(PyfficeDocument):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """Pyffice Script is a Document type that handles text-based versions of documents within the pyffice framework."""
 
     def __init__(self, cfg=None) -> None:
         """"""
-        if cfg is None:
-            cfg = {"document": None}
+        cfg = cfg or {"document": None}
         super().__init__(cfg)
         self.config.override(kahndor.Instruct(pxcfg).select("PyfficeScript").override(cfg))
         self.active_page = None
@@ -508,10 +508,24 @@ class PyfficeScript(PyfficeDocument):
                     # logma.info(f"Entry Text {entry_text}")
                     if isinstance(entry_text, str):
                         text += entry_text
+            if text == "":
+                text = None
         logma.info(f"Text {text}")
         if isinstance(text, dict):
             text = text.get("full_text", "")
         # logma.info(f"Text {text}")
+        if text is None:
+            if isinstance(self.content, str):
+                text = self.content
+                if debug:
+                    logma.warning(f"Text {text} not proper content dictionary")
+                    # raise Exception(f"Text {text} not proper content dictionary")
+            elif isinstance(self.content, dict):
+                text = self.content.get("content", {}).get("text", None)
+                logma.info(f"Text {text}")
+            else:
+                raise Exception(f"Text {text} not proper content dictionary")
+
         cfg = {"unit": {"value": text}}
         text = PyfficeText(cfg)
         text.load_unit()
