@@ -13,8 +13,11 @@
 
 # -*- coding: utf-8 -*
 # ======================================Standard Library Modules======================================================||
+from collections import Counter
 from os.path import abspath, dirname, join
 import datetime as dt
+
+from PIL import Image
 
 # ======================================3rd Party Library Modules=====================================================||
 
@@ -22,7 +25,7 @@ import datetime as dt
 from kahndor import kahndor
 from kahndor.logma import Logma
 from pyffice.document import PyfficeDocument
-from typing import Any
+from typing import Any, cast
 from typing_extensions import Self
 
 # ====================================================================================================================||
@@ -241,6 +244,29 @@ class PyfficeColorPalette(PyfficeDocument):
         self.add_change("colors", self.colors, color, "del")
         self.add_change("hex_colors", self.hex_colors, color, "del")
         return self
+
+    def extract_palette(self, content_path) -> dict[str, list[dict[str, int | float | str]]]:
+        """Return exact RGB color usage from an image, ordered by frequency."""
+        with Image.open(content_path) as image:
+            rgb_image = image.convert("RGB")
+            pixels = [
+                cast(tuple[int, int, int], rgb_image.getpixel((x, y)))
+                for y in range(rgb_image.height)
+                for x in range(rgb_image.width)
+            ]
+
+        total = len(pixels)
+        counts = Counter(pixels)
+        colors = []
+        for (red, green, blue), count in counts.most_common():
+            colors.append(
+                {
+                    "hex": f"#{red:02x}{green:02x}{blue:02x}",
+                    "count": count,
+                    "percent": round(count * 100 / total, 2),
+                }
+            )
+        return {"colors": colors}
 
     def extract_colors(self, content_path) -> None:
         """
