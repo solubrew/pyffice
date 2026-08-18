@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **PyfficePDF binary storage (T-NEW-159)** -- `get_binary()` no
+  longer returns an empty stub. It now returns the stored
+  `content["bytes"]` blob when present, or the on-disk bytes from
+  `_get_bytes()` otherwise. `set_content({"file_path": ..., "bytes": ...})`
+  with `location == "internal"` round-trips the binary envelope
+  through a fresh `PyfficeDocument`. Unknown `location` values
+  raise `UnknownLocationError`. 5 new tests in
+  `tests/pyffice_unit/unit/images/test_pdf_binary.py`.
+
+### Added
+
+- **Palette extraction (T-NEW-117)** -- `PyfficeColorPalette.extract_palette()`
+  returns ordered (color, frequency) tuples from an image's palette.
+  Referenced by NchantdOffice NchantdPalette toolbar; commit `1cd3c48`
+  on `origin/gamma`. Pushed via `nchantdoffice` integration as `419a317`.
+
 ## [0.1.1] - 2025-05-25
 
 ### Added

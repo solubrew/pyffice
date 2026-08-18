@@ -14,9 +14,9 @@
 ### Repository Info
 
 - **Branch**: gamma
-- **Head**: 50501d22e3bf6fbb5b4e7c7d8a9e1f3b6c2d5a84
+- **Head**: 4a7914c (T-NEW-159 PyfficePDF binary storage)
 - **Status**: Active development
-- **Last Commit**: Document type review complete
+- **Last Commit**: PyfficePDF binary storage (T-NEW-159)
 
 ### Code Metrics
 
