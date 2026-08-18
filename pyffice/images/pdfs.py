@@ -157,9 +157,21 @@ class PyfficePDF(PyfficeDocument):
         mat = fitz.Matrix(self.scale, self.scale)
         pix = page.get_pixmap(matrix=mat)
 
-    def get_binary(self) -> Any:
-        """Get PDF as binary."""
-        return b""
+    def get_binary(self) -> bytes:
+        """Get PDF as binary.
+
+        Returns the stored binary payload when the document was
+        loaded through ``set_content`` on an internal location, or
+        the on-disk bytes when a file path is set. Returns ``b""``
+        when the PDF has no bytes yet (e.g. an unsaved new document
+        with no path).
+        """
+        if isinstance(self.content, dict):
+            stored = self.content.get("bytes")
+            if isinstance(stored, (bytes, bytearray)) and stored:
+                return bytes(stored)
+        on_disk = self._get_bytes()
+        return on_disk if on_disk is not None else b""
 
     def get_content(self) -> Any:
         """Get PDF content."""
@@ -292,10 +304,10 @@ class PyfficePDF(PyfficeDocument):
 
     def set_content(self, content) -> Self:
         """Set the content.
-        
+
         Args:
             content: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -304,13 +316,24 @@ class PyfficePDF(PyfficeDocument):
         if self.location is None:
             self.set_location(None)
         if self.location == "internal":
-            content = self._get_bytes()
+            provided_bytes = None
+            if isinstance(content, dict):
+                provided = content.get("bytes")
+                if isinstance(provided, (bytes, bytearray)) and provided:
+                    provided_bytes = bytes(provided)
+            pdf_bytes = provided_bytes or self._get_bytes()
+            if pdf_bytes is None:
+                content = {}
+            else:
+                content = {"bytes": pdf_bytes, "file_path": self.file_path}
         elif self.location == "external":
             if content is not None:
                 self.set_file_path(content.get("file_path", None))
                 content = {"file_path": self.file_path}
             else:
                 raise UnknownLocationError(f"Unknown Location {self.location}")
+        else:
+            raise UnknownLocationError(f"Unknown Location {self.location}")
         if content is None:
             content = {}
         if content != self.content:
