@@ -129,7 +129,7 @@ class PyfficeCloudPort(PyfficePort):
     from env vars.
     """
 
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     PROVIDER = "base"
 
@@ -312,7 +312,7 @@ class PyfficePortGoogleDrive(PyfficeCloudPort):
         ``{"access_token": "ya29..."}``
     """
 
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     PROVIDER = "google_drive"
 
     def authenticate(self, credentials: Optional[dict] = None) -> Self:
@@ -477,7 +477,7 @@ class PyfficePortDropbox(PyfficeCloudPort):
         ``{"app_key": "...", "app_secret": "...", "refresh_token": "..."}``
     """
 
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     PROVIDER = "dropbox"
 
     def authenticate(self, credentials: Optional[dict] = None) -> Self:

@@ -61,7 +61,7 @@ pxcfg = join(here, "_data_", ".yaml")
 
 
 class PyfficeProject(PyfficeDocumentManager):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """Project management document with bidirectional format conversion.
 
     Supports:
@@ -264,7 +264,8 @@ class PyfficeProject(PyfficeDocumentManager):
 
 class PyfficeProjectAssignment(PyfficeUnit):
     """"""
-    SERIALIZATION_VERSION = (1, 0, 0)
+
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg=None) -> None:
         """"""
@@ -274,7 +275,8 @@ class PyfficeProjectAssignment(PyfficeUnit):
 
 class PyfficeProjectTask(PyfficeUnit):
     """Represents a task in a project."""
-    SERIALIZATION_VERSION = (1, 0, 0)
+
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg: Optional[dict] = None) -> None:
         super().__init__(cfg)
@@ -312,7 +314,8 @@ class PyfficeProjectTask(PyfficeUnit):
 
 class PyfficeProjectResource(PyfficeUnit):
     """Represents a resource in a project."""
-    SERIALIZATION_VERSION = (1, 0, 0)
+
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg: Optional[dict] = None) -> None:
         super().__init__(cfg)
@@ -352,9 +355,12 @@ class PyfficeProjectResource(PyfficeUnit):
 Returns:
     Self for chaining.
 """
+
+
 class PyfficeProjectMilestone(PyfficeUnit):
     """Represents a milestone in a project."""
-    SERIALIZATION_VERSION = (1, 0, 0)
+
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg: Optional[dict] = None) -> None:
         super().__init__(cfg)

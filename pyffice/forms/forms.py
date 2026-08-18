@@ -37,7 +37,7 @@ pxcfg = join(here, "_data_", "forms.yaml")
 
 
 class PyfficeForm(PyfficeDocument):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """
     PyfficeForm is a subclass of PyfficeDocument that facilitates the creation and management
     of forms with sections, questions, and answers. It provides methods for adding, editing, and
@@ -58,13 +58,13 @@ class PyfficeForm(PyfficeDocument):
 
     def add_answer(self, question_id, text, branch=None, sequence=None) -> Self:
         """Add a answer.
-        
+
         Args:
             question_id: Parameter.
             text: Parameter.
             branch: Parameter.
             sequence: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -86,7 +86,7 @@ class PyfficeForm(PyfficeDocument):
         self, section_id, field, sequence=-1, response_scope="text", style="normal", required=False, always_show=False
     ) -> Any:
         """Add a form field.
-        
+
         Args:
             section_id: Parameter.
             field: Parameter.
@@ -95,7 +95,7 @@ class PyfficeForm(PyfficeDocument):
             style: Parameter.
             required: Parameter.
             always_show: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -111,10 +111,10 @@ class PyfficeForm(PyfficeDocument):
 
     def add_response(self, response) -> Self:
         """Add a response.
-        
+
         Args:
             response: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -144,24 +144,24 @@ class PyfficeForm(PyfficeDocument):
 
     def del_field(self, field) -> Self:
         """Delete a field from the form."""
-        fields = getattr(self, 'fields', [])
+        fields = getattr(self, "fields", [])
         if field in fields:
             fields.remove(field)
         return self
 
     def del_response(self, response) -> Self:
         """Delete a response."""
-        responses = getattr(self, 'responses', [])
+        responses = getattr(self, "responses", [])
         if response in responses:
             responses.remove(response)
         return self
 
     def del_section(self, section_id) -> Self:
         """Remove the section.
-        
+
         Args:
             section_id: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -173,10 +173,10 @@ class PyfficeForm(PyfficeDocument):
 
     def load_document(self, document=None) -> Self:
         """Load document into this document.
-        
+
         Args:
             document: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -193,10 +193,10 @@ class PyfficeForm(PyfficeDocument):
 
     def set_form_footer_image(self, file_path) -> Self:
         """Set the form footer image.
-        
+
         Args:
             file_path: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -214,10 +214,10 @@ class PyfficeForm(PyfficeDocument):
 
     def set_form_header_image(self, file_path) -> Self:
         """Set the form header image.
-        
+
         Args:
             file_path: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -230,10 +230,10 @@ class PyfficeForm(PyfficeDocument):
 
     def set_sections(self, sections) -> Self:
         """Set the sections.
-        
+
         Args:
             sections: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -242,9 +242,11 @@ class PyfficeForm(PyfficeDocument):
         self.sections = sections
         return self
 
+
 class PyfficeFormsManager(PyfficeDocumentManager):
     """"""
-    SERIALIZATION_VERSION = (1, 0, 0)
+
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg=None) -> None:
         """"""
@@ -254,10 +256,10 @@ class PyfficeFormsManager(PyfficeDocumentManager):
 
     def load_document(self, document=None) -> Self:
         """Load document into this document.
-        
+
         Args:
             document: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -271,10 +273,10 @@ class PyfficeFormsManager(PyfficeDocumentManager):
 
     def set_forms(self, forms) -> Self:
         """Set the forms.
-        
+
         Args:
             forms: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -285,9 +287,10 @@ class PyfficeFormsManager(PyfficeDocumentManager):
             self.forms = forms
         return self
 
+
 class PyfficeSurvey(PyfficeDocument):
     """
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     Manages the creation, distribution and service used in surveys. Allowing the selection between Google Forms,
     YouForm and PyfficeForms.
 
@@ -308,12 +311,12 @@ class PyfficeSurvey(PyfficeDocument):
 
     def add_field_response(self, field, field_id, response_id) -> Self:
         """Add a field response.
-        
+
         Args:
             field: Parameter.
             field_id: Parameter.
             response_id: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -324,11 +327,11 @@ class PyfficeSurvey(PyfficeDocument):
 
     def add_form_response(self, response, response_id=None) -> Self:
         """Add a form response.
-        
+
         Args:
             response: Parameter.
             response_id: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -341,10 +344,10 @@ class PyfficeSurvey(PyfficeDocument):
 
     def add_recipient(self, recipient) -> Self:
         """Add a recipient for this document.
-        
+
         Args:
             recipient: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -366,17 +369,17 @@ class PyfficeSurvey(PyfficeDocument):
 
     def del_recipient(self, recipient) -> Self:
         """Delete a recipient."""
-        recipients = getattr(self, 'recipients', [])
+        recipients = getattr(self, "recipients", [])
         if recipient in recipients:
             recipients.remove(recipient)
         return self
 
     def get_form(self, form_id) -> Any:
         """Return the form.
-        
+
         Args:
             form_id: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -386,10 +389,10 @@ class PyfficeSurvey(PyfficeDocument):
 
     def load_document(self, document=None) -> Self:
         """Load document into this document.
-        
+
         Args:
             document: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -407,10 +410,10 @@ class PyfficeSurvey(PyfficeDocument):
 
     def set_channel(self, channel) -> Self:
         """Set the channel.
-        
+
         Args:
             channel: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -429,10 +432,10 @@ class PyfficeSurvey(PyfficeDocument):
 
     def set_end_date(self, end_datetime) -> Self:
         """Set the end date.
-        
+
         Args:
             end_datetime: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -443,10 +446,10 @@ class PyfficeSurvey(PyfficeDocument):
 
     def set_form(self, form) -> Self:
         """Set the form.
-        
+
         Args:
             form: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -458,10 +461,10 @@ class PyfficeSurvey(PyfficeDocument):
 
     def set_form_id(self, form_id) -> Self:
         """Set the form id.
-        
+
         Args:
             form_id: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -474,10 +477,10 @@ class PyfficeSurvey(PyfficeDocument):
 
     def set_responses(self, responses=None) -> Self:
         """Set the responses.
-        
+
         Args:
             responses: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -488,10 +491,10 @@ class PyfficeSurvey(PyfficeDocument):
 
     def set_schedule(self, schedule=None) -> Self:
         """Set the schedule.
-        
+
         Args:
             schedule: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -502,10 +505,10 @@ class PyfficeSurvey(PyfficeDocument):
 
     def set_start_date(self, start_datetime) -> Self:
         """Set the start date.
-        
+
         Args:
             start_datetime: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -513,6 +516,7 @@ class PyfficeSurvey(PyfficeDocument):
             self.add_change("schedule", self.schedule, start_datetime)
             self.schedule["start"] = start_datetime
         return self
+
 
 # ====================================================================================================================||
 

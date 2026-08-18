@@ -35,7 +35,7 @@ pxcfg = join(here, "_data_", "items.yaml")
 
 
 class PyfficeTable(PyfficeUnit):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """"""
 
     def __init__(self, cfg=None) -> None:
@@ -45,10 +45,10 @@ class PyfficeTable(PyfficeUnit):
 
     def load_unit(self, unit=None) -> Self:
         """Load a unit dict into this document.
-        
+
         Args:
             unit: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -61,11 +61,11 @@ class PyfficeTable(PyfficeUnit):
 
     def set_dataframe(self, data, columns=None) -> Self:
         """Set the dataframe.
-        
+
         Args:
             data: Parameter.
             columns: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -79,9 +79,11 @@ class PyfficeTable(PyfficeUnit):
         self.data = data
         return self
 
+
 class PyfficePart(PyfficeUnit):
     """"""
-    SERIALIZATION_VERSION = (1, 0, 0)
+
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg=None) -> None:
         """"""

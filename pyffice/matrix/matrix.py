@@ -46,7 +46,7 @@ pxcfg = join(here, "_data_", "matrix.yaml")
 
 
 class PyfficeMatrix(PyfficeDocumentManager):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """A Pyffice Matrix is a top level pyffice document type that can be included in a Pyffice Book"""
 
     def __init__(self, cfg=None) -> None:
@@ -617,6 +617,7 @@ class PyfficeMatrix(PyfficeDocumentManager):
             "first_series_title": first_series_title,
         }
         from pyffice.charts.charts import PyfficeChart
+
         chart = PyfficeChart(cfg)
         return chart
 

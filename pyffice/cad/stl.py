@@ -17,7 +17,7 @@ logma.off()
 
 
 class PyfficeSTL(PyfficeDocument):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     EXTENSIONS = {".stl"}
     DEFAULT_LIMIT = 256 * 1024 * 1024  # 256MB
 
@@ -40,6 +40,7 @@ class PyfficeSTL(PyfficeDocument):
         self.file_path = Path(file_path) if file_path else None
         logma.debug(f"PyfficeSTL.__init__ called")
         self.faces: List[Dict[str, Any]] = []
+
     def read(self) -> Dict[str, Any]:
         """Read STL file (ASCII or binary)"""
         content = self.file_path.read_text(errors="ignore")
@@ -180,6 +181,7 @@ class PyfficeSTL(PyfficeDocument):
         """
         import json as _json
         from os.path import exists
+
         if file_ is None:
             file_ = self.file_path
         if not file_ or not exists(file_):
@@ -242,6 +244,7 @@ class PyfficeSTL(PyfficeDocument):
         # Ensure we're writing to a string path (json.dump rejects None/Path depending).
         target = str(path) if not isinstance(path, str) else path
         import json as _json
+
         doc = self.to_dict()
         with open(target, "w") as f:
             _json.dump(doc, f, indent=2, default=str)

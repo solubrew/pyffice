@@ -34,7 +34,7 @@ pxcfg = join(here, "_data_", ".yaml")
 
 
 class PyfficePersona(PyfficeDocument):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """"""
 
     def __init__(self, cfg=None) -> None:
@@ -44,13 +44,13 @@ class PyfficePersona(PyfficeDocument):
 
     def calculate_myers_briggs(self, ei=0.5, ns=0.5, tf=0.5, pj=0.5) -> None:
         """Calculate myers briggs.
-        
+
         Args:
             ei: Parameter.
             ns: Parameter.
             tf: Parameter.
             pj: Parameter.
-        
+
         Returns:
             Self for chaining.
         """

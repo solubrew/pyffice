@@ -44,7 +44,7 @@ HOMEPAGE = {"url": "https://www.pyffice.com/"}
 
 
 class PyfficeWebBrowser(PyfficeDocumentManager):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """"""
 
     def __init__(self, cfg=None) -> None:
@@ -55,9 +55,9 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
         self.active_page = None
         self.active_profile = None
         self.home_page = None
-        self.library = None
+
         self.pages = None
-        self.profile_manager = None
+
         self.doc_type = "browser"
 
     def add_page(self, page) -> Self:
@@ -77,31 +77,8 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
         self.set_next_page(page)
         return self
 
-    def add_profile(self, profile) -> Self:
-        """Add a profile.
-
-        Args:
-            profile: Parameter.
-
-        Returns:
-            Self for chaining.
-        """
-        if isinstance(profile, PyfficeWebProfile):
-            profile = profile
-        else:
-            profile = PyfficeWebProfile(profile)
-            profile.load_document()
-        logma.info(f"Profile: {profile}")
-        self.profile_manager.add_profile(profile)
-        return self
-
     def del_page(self) -> Self:
         """Delete a page."""
-        _p = True  # placeholder
-        return self
-
-    def del_profile(self, name) -> Self:
-        """Delete a profile."""
         _p = True  # placeholder
         return self
 
@@ -153,8 +130,7 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
         super().load_document(document)
         self.set_page_home(document.get("home_url", None))
         logma.info(f"URL Home")
-        self.set_library(document.get("library", None))
-        self.set_profile_manager(document.get("profile_manager", None))
+        # TODO: need to get profile from the PyfficeWebBrowserManager
         self.set_profile_active(document.get("active_profile", None))
         self.set_pages(document.get("pages", None))
         self.set_page_active(document.get("active_page", None))
@@ -181,23 +157,6 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
         if self.pages is None:
             self.set_home_page()
         page.previous_page = self.pages
-        return self
-
-    def set_library(self, library) -> Self:
-        """Set the library.
-
-        Args:
-            library: Parameter.
-
-        Returns:
-            Self for chaining.
-        """
-        cfg = {"library": library}
-        library = PyfficeURLLibrary(cfg)
-        library.load_document()
-        if library != self.library:
-            self.add_change("library", self.library, library)
-            self.library = library
         return self
 
     def set_page_active(self, page) -> Self:
@@ -291,32 +250,13 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
         cfg = {"profile": profile}
         profile = PyfficeWebProfile(cfg)
         profile.load_document()
-        if self.active_page is None:
-            if len(self.profile_manager.profiles) == 0:
-                self.add_profile(profile)
-            profile = self.profile_manager.profiles[0]
+        # if self.active_page is None:
+        #     if len(self.profile_manager.profiles) == 0:
+        #         self.add_profile(profile)
+        #     profile = self.profile_manager.profiles[0]
         if profile != self.active_profile:
             self.add_change("active_profile", self.active_profile, profile)
             self.active_profile = profile
-        return self
-
-    def set_profile_manager(self, profiles) -> Self:
-        """Set the profile manager.
-
-        Args:
-            profiles: Parameter.
-
-        Returns:
-            Self for chaining.
-        """
-        cfg = {"profiles": profiles}
-        profile_manager = PyfficeWebProfileManager(cfg)
-        profile_manager.load_document()
-        logma.info(f"profile_manager: {profile_manager}")
-        if profile_manager != self.profile_manager:
-            logma.info(f"profile_manager: {profile_manager}")
-            self.add_change("profile_manager", self.profile_manager, profile_manager)
-            self.profile_manager = profile_manager
         return self
 
     def set_refresh_time(self) -> Self:
@@ -356,8 +296,7 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
             Self for chaining.
         """
         doc = super().to_dict()
-        doc["data"]["profile_manager"] = self.profile_manager.to_dict()
-        doc["data"]["library"] = self.library.to_dict()
+
         # doc["data"]["unit"] = self.active_url.to_dict()["unit"]
         # doc["data"]["home_page"] = self.home_page.to_dict()
         if self.active_profile is not None:
@@ -370,7 +309,7 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
 class PyfficeWebPage(PyfficeDocument):
     """"""
 
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg=None) -> None:
         """"""
@@ -397,6 +336,8 @@ class PyfficeWebPage(PyfficeDocument):
             Self for chaining.
         """
         self.add_change("history", deepcopy(self.history), url, "add")
+        if self.history is None:
+            self.history = []
         self.history.append(url)
         return self
 
@@ -412,6 +353,8 @@ class PyfficeWebPage(PyfficeDocument):
         hash_ = self.get_finger_print(snapshot)
         snapshot = {"path": None, "hash": hash_, "content_enc64": encode64(snapshot)}
         self.add_change("snapshots", self.snapshots, snapshot, "add")
+        if self.snapshots is None:
+            self.snapshots = []
         self.snapshots.append(snapshot)
         return self
 
@@ -654,8 +597,7 @@ class PyfficeWebProfileManager(PyfficeRolodex):
     def __init__(self, cfg=None) -> None:
         """"""
         logma.debug(f"PyfficeWebProfileManager.__init__ called")
-        if cfg is None:
-            cfg = {}
+        cfg = cfg or {}
         cfg["group"] = "profile"
         super().__init__(cfg)
         self.config.override(kahndor.Instruct(pxcfg).select("PyfficeWebProfileManager")).override(cfg)
@@ -675,6 +617,8 @@ class PyfficeWebProfileManager(PyfficeRolodex):
             cfg = {}
             profile = PyfficeWebProfile(cfg)
         self.add_change("profiles", deepcopy(self.profiles), deepcopy(profile))
+        if self.profiles is None:
+            self.profiles = []
         self.profiles.append(profile)
         self.add_contact(profile, "profile")
         return self
@@ -758,10 +702,19 @@ class PyfficeWebProfileManager(PyfficeRolodex):
         """
         if profile is None:
             return self
+        if self.profiles is None:
+            self._initialize_base_profile()
         profile = self.profiles[profile.did]
         if profile != self.active_profile:
             self.add_change("active_profile", self.active_profile, profile)
             self.active_profile = profile
+        return self
+
+    def _initialize_base_profile(self):
+        """"""
+        cfg = {}
+        profile = PyfficeWebProfile(cfg).load_document()
+        self.profiles = [profile]
         return self
 
     def set_profiles(self, profiles) -> Self:
@@ -791,6 +744,120 @@ class PyfficeWebProfileManager(PyfficeRolodex):
         if self.active_profile is not None:
             doc["data"]["active_profile"] = self.active_profile.to_dict()
         return self._canonicalize(doc)
+
+
+class PyfficeWebBrowserManager(PyfficeDocumentManager):
+    """"""
+
+    def __init__(self, cfg=None):
+        """"""
+        super().__init__(cfg)
+        self.config.override(kahndor.Instruct(pxcfg).select("PyfficeWebBrowserManager").override(cfg))
+        self.library = None
+        self.profile_manager = None
+
+    def add_profile(self, profile) -> Self:
+        """Add a profile.
+
+        Args:
+            profile: Parameter.
+
+        Returns:
+            Self for chaining.
+        """
+        if isinstance(profile, PyfficeWebProfile):
+            profile = profile
+        else:
+            profile = PyfficeWebProfile(profile)
+            profile.load_document()
+        logma.info(f"Profile: {profile}")
+        if self.profile_manager is None:
+            self.set_profile_manager({})
+        self.profile_manager.add_profile(profile)
+        return self
+
+    def add_url(self, url):
+        """"""
+
+    def del_url(self, url):
+        """"""
+
+    def del_profile(self, name) -> Self:
+        """Delete a profile."""
+        _p = True  # placeholder
+        return self
+
+    def load_document(self, document=None) -> Self:
+        """"""
+        document = document or {}
+        super().load_document(document)
+        self.set_library(document.get("library", None))
+        self.set_profile_manager(document.get("profile_manager", None))
+        return self
+
+    def set_library(self, library) -> Self:
+        """Set the library.
+
+        Args:
+            library: Parameter.
+
+        Returns:
+            Self for chaining.
+        """
+        cfg = {"library": library}
+        library = PyfficeURLLibrary(cfg)
+        library.load_document()
+        if library != self.library:
+            self.add_change("library", self.library, library)
+            self.library = library
+        return self
+
+    def set_profile_active(self, profile) -> Self:
+        """Set the profile active.
+
+        Args:
+            profile: Parameter.
+
+        Returns:
+            Self for chaining.
+        """
+        cfg = {"profile": profile}
+        profile = PyfficeWebProfile(cfg)
+        profile.load_document()
+        if self.active_page is None:
+            if len(self.profile_manager.profiles) == 0:
+                self.add_profile(profile)
+            profile = self.profile_manager.profiles[0]
+        if profile != self.active_profile:
+            self.add_change("active_profile", self.active_profile, profile)
+            self.active_profile = profile
+        return self
+
+    def set_profile_manager(self, profiles) -> Self:
+        """Set the profile manager.
+
+        Args:
+            profiles: Parameter.
+
+        Returns:
+            Self for chaining.
+        """
+        cfg = {"profiles": profiles}
+        profile_manager = PyfficeWebProfileManager(cfg)
+        profile_manager.load_document()
+        logma.info(f"profile_manager: {profile_manager}")
+        if profile_manager != self.profile_manager:
+            logma.info(f"profile_manager: {profile_manager}")
+            self.add_change("profile_manager", self.profile_manager, profile_manager)
+            self.profile_manager = profile_manager
+        return self
+
+    def to_dict(self):
+        """"""
+        doc = super().to_dict()
+        doc["data"]["profile_manager"] = self.profile_manager.to_dict()
+        doc["data"]["library"] = self.library.to_dict()
+        return doc
 
 
 # ====================================================================================================================||

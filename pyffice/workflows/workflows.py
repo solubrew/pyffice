@@ -35,7 +35,7 @@ pxcfg = join(here, "_data_", "workflows.yaml")
 
 
 class PyfficeWorkflow(PyfficeUnit):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """"""
 
     def __init__(self, cfg=None) -> None:
@@ -47,14 +47,14 @@ class PyfficeWorkflow(PyfficeUnit):
 
     def add_node(self, node_id, node_data=None) -> Self:
         """Add a node to workflow."""
-        nodes = getattr(self, 'nodes', {})
+        nodes = getattr(self, "nodes", {})
         nodes[node_id] = node_data or {}
         self.nodes = nodes
         return self
 
     def add_edge(self, from_node, to_node) -> Self:
         """Add an edge between nodes."""
-        edges = getattr(self, 'edges', [])
+        edges = getattr(self, "edges", [])
         edges.append((from_node, to_node))
         self.edges = edges
         return self
@@ -71,10 +71,10 @@ class PyfficeWorkflow(PyfficeUnit):
 
     def load_unit(self, unit) -> Self:
         """Load a unit dict into this document.
-        
+
         Args:
             unit: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -82,6 +82,7 @@ class PyfficeWorkflow(PyfficeUnit):
             unit = self.config.dikt.get("unit", {})
         super().load_unit(unit)
         return self
+
 
 # ====================================================================================================================||
 

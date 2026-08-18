@@ -29,6 +29,7 @@ from pyffice.items.text import PyfficeText
 from pyffice.analytics.sources import PyfficeDataSet
 from typing import Any
 from typing_extensions import Self
+
 # ====================================================================================================================||
 here = join(dirname(__file__), "")  # ||
 log = True
@@ -39,7 +40,7 @@ pxcfg = join(here, "_data_", "charts.yaml")
 
 
 class PyfficeChart(PyfficeDocument):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """
     A flexible general-purpose charting class for creating various charts using Seaborn and Matplotlib.
     """
@@ -92,26 +93,38 @@ class PyfficeChart(PyfficeDocument):
 
     def add_axis(self, axis) -> Self:
         """Add a axis.
-        
+
         Args:
             axis: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
-        axis = self._merge_config(axis, "axis", [
-            "dimension", "title", "label", "position", "size",
-            "orientation", "start", "step", "labels", "primary",
-        ])
+        axis = self._merge_config(
+            axis,
+            "axis",
+            [
+                "dimension",
+                "title",
+                "label",
+                "position",
+                "size",
+                "orientation",
+                "start",
+                "step",
+                "labels",
+                "primary",
+            ],
+        )
         self.axes.append(axis)
         return self
 
     def add_legend(self, legend) -> Self:
         """Add a legend.
-        
+
         Args:
             legend: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -129,10 +142,10 @@ class PyfficeChart(PyfficeDocument):
 
     def add_plotarea(self, plotarea) -> Self:
         """Add a plotarea.
-        
+
         Args:
             plotarea: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -158,13 +171,33 @@ class PyfficeChart(PyfficeDocument):
             label (str): Label for the legend.
             **kwargs: Additional keyword arguments for Seaborn or Matplotlib plots (e.g., color, linestyle).
         """
-        format_ = self._merge_config(format_, "series", [
-            "marker", "markersize", "linestyle", "linewidth", "pattern",
-            "fill", "fill_color", "marker_color", "line_color", "show_labels",
-        ])
-        defaults = {"marker": "circle", "markersize": 10, "linestyle": "solid",
-                     "linewidth": 1, "fill": True, "fill_color": "blue",
-                     "marker_color": "blue", "line_color": "blue", "show_labels": True}
+        format_ = self._merge_config(
+            format_,
+            "series",
+            [
+                "marker",
+                "markersize",
+                "linestyle",
+                "linewidth",
+                "pattern",
+                "fill",
+                "fill_color",
+                "marker_color",
+                "line_color",
+                "show_labels",
+            ],
+        )
+        defaults = {
+            "marker": "circle",
+            "markersize": 10,
+            "linestyle": "solid",
+            "linewidth": 1,
+            "fill": True,
+            "fill_color": "blue",
+            "marker_color": "blue",
+            "line_color": "blue",
+            "show_labels": True,
+        }
         for key, val in defaults.items():
             if format_.get(key) is None:
                 format_[key] = val
@@ -173,10 +206,10 @@ class PyfficeChart(PyfficeDocument):
 
     def del_axis(self, axis) -> Self:
         """Remove the axis.
-        
+
         Args:
             axis: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -186,10 +219,10 @@ class PyfficeChart(PyfficeDocument):
 
     def del_legend(self, legend) -> Self:
         """Remove the legend.
-        
+
         Args:
             legend: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -199,10 +232,10 @@ class PyfficeChart(PyfficeDocument):
 
     def del_plotarea(self, plotarea) -> Self:
         """Remove the plotarea.
-        
+
         Args:
             plotarea: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -212,10 +245,10 @@ class PyfficeChart(PyfficeDocument):
 
     def del_series(self, series) -> Self:
         """Remove the series.
-        
+
         Args:
             series: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -225,10 +258,10 @@ class PyfficeChart(PyfficeDocument):
 
     def load_document(self, document=None) -> Self:
         """Load document into this document.
-        
+
         Args:
             document: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -254,12 +287,12 @@ class PyfficeChart(PyfficeDocument):
 
     def save(self, path=None, syntax=None, encrypt_key=None) -> Self:
         """Save the document.
-        
+
         Args:
             path: Parameter.
             syntax: Parameter.
             encrypt_key: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -292,7 +325,10 @@ class PyfficeChart(PyfficeDocument):
         porter.file_export(self, path)
 
     def load_from_xlsx(
-        self, file_path, chart_index=0, include_data=True,
+        self,
+        file_path,
+        chart_index=0,
+        include_data=True,
     ) -> Self:
         """T-NEW-067: load a chart directly from an ``.xlsx`` file.
 
@@ -322,22 +358,17 @@ class PyfficeChart(PyfficeDocument):
         try:
             import openpyxl
         except ImportError:
-            logma.warning(
-                f"[PyfficeChart] load_from_xlsx: openpyxl not "
-                f"installed; cannot load {file_path}."
-            )
+            logma.warning(f"[PyfficeChart] load_from_xlsx: openpyxl not " f"installed; cannot load {file_path}.")
             return self
         try:
             wb = openpyxl.load_workbook(
-                file_path, data_only=False,
+                file_path,
+                data_only=False,
             )
             ws = wb.active
             openpyxl_charts = getattr(ws, "_charts", []) or []
             if not openpyxl_charts:
-                logma.info(
-                    f"[PyfficeChart] load_from_xlsx: {file_path} "
-                    f"has no charts in active sheet; no-op."
-                )
+                logma.info(f"[PyfficeChart] load_from_xlsx: {file_path} " f"has no charts in active sheet; no-op.")
                 return self
             if chart_index >= len(openpyxl_charts):
                 logma.warning(
@@ -389,9 +420,7 @@ class PyfficeChart(PyfficeDocument):
                 series_count = len(series_list)
                 if series_count > 0:
                     s0 = series_list[0]
-                    if getattr(s0, "tx", None) is not None and getattr(
-                        s0.tx, "strRef", None
-                    ) is not None:
+                    if getattr(s0, "tx", None) is not None and getattr(s0.tx, "strRef", None) is not None:
                         first_series_title = str(s0.tx.strRef.f)
             except Exception:
                 pass
@@ -419,10 +448,7 @@ class PyfficeChart(PyfficeDocument):
                         rows.append([str(c) if c is not None else "" for c in row])
                     self.data = rows
                 except Exception as de:
-                    logma.warning(
-                        f"[PyfficeChart] load_from_xlsx: data "
-                        f"load failed for {file_path}: {de}"
-                    )
+                    logma.warning(f"[PyfficeChart] load_from_xlsx: data " f"load failed for {file_path}: {de}")
             logma.info(
                 f"[PyfficeChart] load_from_xlsx: loaded chart "
                 f"#{chart_index} (type={chart_type!r}, "
@@ -432,8 +458,7 @@ class PyfficeChart(PyfficeDocument):
             )
         except (OSError, KeyError, ValueError) as e:
             logma.warning(
-                f"[PyfficeChart] load_from_xlsx: failed for "
-                f"{file_path}: {e}",
+                f"[PyfficeChart] load_from_xlsx: failed for " f"{file_path}: {e}",
                 exc_info=True,
             )
         return self
@@ -441,6 +466,7 @@ class PyfficeChart(PyfficeDocument):
     def save_html(self, path) -> Self:
         """Save chart as HTML file."""
         import os
+
         # Placeholder - would use plotting library to generate HTML
         return self
 
@@ -463,10 +489,10 @@ class PyfficeChart(PyfficeDocument):
 
     def set_chart_type(self, chart_type) -> Self:
         """Set the chart type.
-        
+
         Args:
             chart_type: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -490,10 +516,10 @@ class PyfficeChart(PyfficeDocument):
 
     def set_figsize(self, figsize) -> Self:
         """Set the figsize.
-        
+
         Args:
             figsize: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -501,10 +527,10 @@ class PyfficeChart(PyfficeDocument):
 
     def set_label_xaxis(self, label) -> Self:
         """Set the label xaxis.
-        
+
         Args:
             label: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -512,10 +538,10 @@ class PyfficeChart(PyfficeDocument):
 
     def set_label_yaxis(self, label) -> Self:
         """Set the label yaxis.
-        
+
         Args:
             label: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -523,10 +549,10 @@ class PyfficeChart(PyfficeDocument):
 
     def set_legends(self, legends: list = None) -> Self:
         """Set the legends.
-        
+
         Args:
             legends: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -534,10 +560,10 @@ class PyfficeChart(PyfficeDocument):
 
     def set_orientation(self, orientation) -> Self:
         """Set the orientation.
-        
+
         Args:
             orientation: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -545,10 +571,10 @@ class PyfficeChart(PyfficeDocument):
 
     def set_origin(self, origin: list = None) -> Self:
         """Set the origin.
-        
+
         Args:
             origin: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -556,10 +582,10 @@ class PyfficeChart(PyfficeDocument):
 
     def set_plotareas(self, plotareas) -> Self:
         """Set the plotareas.
-        
+
         Args:
             plotareas: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -567,10 +593,10 @@ class PyfficeChart(PyfficeDocument):
 
     def set_position(self, position) -> Self:
         """Set the position.
-        
+
         Args:
             position: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -588,10 +614,10 @@ class PyfficeChart(PyfficeDocument):
 
     def set_series(self, series: list = None) -> Self:
         """Set the series.
-        
+
         Args:
             series: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -599,10 +625,10 @@ class PyfficeChart(PyfficeDocument):
 
     def set_size(self, size) -> Self:
         """Set the size.
-        
+
         Args:
             size: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -620,10 +646,10 @@ class PyfficeChart(PyfficeDocument):
 
     def set_theme(self, theme="whitegrid") -> Self:
         """Set the theme.
-        
+
         Args:
             theme: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -631,12 +657,12 @@ class PyfficeChart(PyfficeDocument):
 
     def set_title(self, title, size: int = 12, color: str = "black") -> Self:
         """Set the title.
-        
+
         Args:
             title: Parameter.
             size: Parameter.
             color: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -650,6 +676,7 @@ class PyfficeChart(PyfficeDocument):
             self.add_change("title", self.title, title)
             self.title = title
         return self
+
 
 # ====================================================================================================================||
 

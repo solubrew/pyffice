@@ -39,7 +39,7 @@ pxcfg = join(here, "_data_", ".yaml")
 
 
 class PyfficeColorPalette(PyfficeDocument):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """
     PyfficeColorPalette is responsible for creating and managing color palettes.
     It supports adding colors manually, retrieving colors, and extracting colors

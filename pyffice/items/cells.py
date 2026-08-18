@@ -39,7 +39,7 @@ pxcfg = join(here, "_data_", "cells.yaml")
 
 
 class PyfficeBackground(PyfficeUnit):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """"""
 
     def __init__(self, cfg=None) -> None:
@@ -54,10 +54,10 @@ class PyfficeBackground(PyfficeUnit):
 
     def load_unit(self, unit) -> Self:
         """Load a unit dict into this document.
-        
+
         Args:
             unit: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -73,10 +73,10 @@ class PyfficeBackground(PyfficeUnit):
 
     def set_color(self, color) -> Self:
         """Set the color.
-        
+
         Args:
             color: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -89,10 +89,10 @@ class PyfficeBackground(PyfficeUnit):
 
     def set_image(self, path) -> Self:
         """Set the image.
-        
+
         Args:
             path: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -113,10 +113,10 @@ class PyfficeBackground(PyfficeUnit):
 
     def set_transparency(self, transparency) -> Self:
         """Set the transparency.
-        
+
         Args:
             transparency: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -125,9 +125,11 @@ class PyfficeBackground(PyfficeUnit):
         self.transparency = transparency
         return self
 
+
 class PyfficeCell(PyfficeUnit):
     """"""
-    SERIALIZATION_VERSION = (1, 0, 0)
+
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg=None) -> None:
         """"""
@@ -153,7 +155,7 @@ class PyfficeCell(PyfficeUnit):
 
     def evaluate(self) -> None:
         """Evaluate.
-        
+
         Returns:
             Self for chaining.
         """
@@ -188,11 +190,11 @@ class PyfficeCell(PyfficeUnit):
 
     def get_formula(self) -> Any:
         """Get cell formula."""
-        return getattr(self, 'formula', None)
+        return getattr(self, "formula", None)
 
     def get_inputs(self) -> Any:
         """Return the inputs.
-        
+
         Returns:
             Self for chaining.
         """
@@ -200,14 +202,14 @@ class PyfficeCell(PyfficeUnit):
 
     def get_value(self) -> Any:
         """Get cell value."""
-        return getattr(self, 'value', None)
+        return getattr(self, "value", None)
 
     def load_unit(self, unit) -> Self:
         """Load a unit dict into this document.
-        
+
         Args:
             unit: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -230,10 +232,10 @@ class PyfficeCell(PyfficeUnit):
 
     def set_address(self, address) -> Self:
         """Set the address.
-        
+
         Args:
             address: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -246,10 +248,10 @@ class PyfficeCell(PyfficeUnit):
 
     def set_background(self, background) -> Self:
         """Set the background.
-        
+
         Args:
             background: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -262,11 +264,11 @@ class PyfficeCell(PyfficeUnit):
 
     def set_border_size(self, size, position="top") -> Self:
         """Set the border size.
-        
+
         Args:
             size: Parameter.
             position: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -278,11 +280,11 @@ class PyfficeCell(PyfficeUnit):
 
     def set_border_color(self, color, position="top") -> Self:
         """Set the border color.
-        
+
         Args:
             color: Parameter.
             position: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -294,11 +296,11 @@ class PyfficeCell(PyfficeUnit):
 
     def set_border_style(self, style, position="top") -> Self:
         """Set the border style.
-        
+
         Args:
             style: Parameter.
             position: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -315,11 +317,11 @@ class PyfficeCell(PyfficeUnit):
 
     def set_formula(self, formula, inputs=None) -> Self:
         """Set the formula.
-        
+
         Args:
             formula: Parameter.
             inputs: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -338,11 +340,11 @@ class PyfficeCell(PyfficeUnit):
 
     def set_value(self, value, font=None) -> Self:
         """Set the value.
-        
+
         Args:
             value: Parameter.
             font: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -354,10 +356,10 @@ class PyfficeCell(PyfficeUnit):
 
     def set_transparency(self, transparency) -> Self:
         """Set the transparency.
-        
+
         Args:
             transparency: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -365,6 +367,7 @@ class PyfficeCell(PyfficeUnit):
             self.add_change("transparency", self.transparency, transparency)
         self.transparency = transparency
         return self
+
 
 # ====================================================================================================================||
 

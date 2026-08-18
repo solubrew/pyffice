@@ -28,7 +28,6 @@ from squirl.orgnql import fonql
 from typing import Any
 from typing_extensions import Self
 
-
 # ====================================================================================================================||
 here = join(dirname(__file__), "")  # ||
 log = True
@@ -39,7 +38,7 @@ pxcfg = join(here, "_data_", "filesystems.yaml")
 
 
 class PyfficeFileSystem(PyfficeDocumentManager):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """"""
 
     def __init__(self, cfg=None) -> None:
@@ -57,10 +56,10 @@ class PyfficeFileSystem(PyfficeDocumentManager):
 
     def add_directory(self, directory) -> Self:
         """Add a directory.
-        
+
         Args:
             directory: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -70,10 +69,10 @@ class PyfficeFileSystem(PyfficeDocumentManager):
 
     def add_file(self, file_) -> Self:
         """Add a file.
-        
+
         Args:
             file_: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -83,10 +82,10 @@ class PyfficeFileSystem(PyfficeDocumentManager):
 
     def add_root(self, root) -> Self:
         """Add a root.
-        
+
         Args:
             root: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -96,10 +95,10 @@ class PyfficeFileSystem(PyfficeDocumentManager):
 
     def del_directory(self, index) -> Self:
         """Remove the directory.
-        
+
         Args:
             index: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -109,10 +108,10 @@ class PyfficeFileSystem(PyfficeDocumentManager):
 
     def del_file(self, index) -> Self:
         """Remove the file.
-        
+
         Args:
             index: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -126,10 +125,10 @@ class PyfficeFileSystem(PyfficeDocumentManager):
 
     def load_document(self, document=None) -> Self:
         """Load document into this document.
-        
+
         Args:
             document: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -146,10 +145,10 @@ class PyfficeFileSystem(PyfficeDocumentManager):
 
     def set_tree(self, tree) -> Self:
         """Set the tree.
-        
+
         Args:
             tree: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -159,10 +158,10 @@ class PyfficeFileSystem(PyfficeDocumentManager):
 
     def set_table(self, table) -> Self:
         """Set the table.
-        
+
         Args:
             table: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -172,10 +171,10 @@ class PyfficeFileSystem(PyfficeDocumentManager):
 
     def open_file(self, file=None) -> Self:
         """Open file.
-        
+
         Args:
             file: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -187,14 +186,15 @@ class PyfficeFileSystem(PyfficeDocumentManager):
 
     def set_content(self, content) -> Self:
         """Set the content.
-        
+
         Args:
             content: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
         from pyffice.pyffice import UnknownLocationError
+
         if self.location is None:
             self.set_location(None)
         if self.location == "external":
@@ -208,10 +208,10 @@ class PyfficeFileSystem(PyfficeDocumentManager):
 
     def set_directories(self, directories=[]) -> Self:
         """Set the directories.
-        
+
         Args:
             directories: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -228,10 +228,10 @@ class PyfficeFileSystem(PyfficeDocumentManager):
 
     def set_files(self, files=[]) -> Self:
         """Set the files.
-        
+
         Args:
             files: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -245,10 +245,10 @@ class PyfficeFileSystem(PyfficeDocumentManager):
 
     def set_root(self, root=None) -> Self:
         """Set the root.
-        
+
         Args:
             root: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -263,7 +263,7 @@ class PyfficeFileSystem(PyfficeDocumentManager):
 
     def to_dict(self) -> Self:
         """Convert this document to dict.
-        
+
         Returns:
             Self for chaining.
         """

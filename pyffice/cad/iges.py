@@ -13,7 +13,7 @@ logma = Logma(__name__)
 
 
 class PyfficeIGES(PyfficeDocument):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """IGES CAD file handler"""
 
     EXTENSIONS = {".iges", ".igs"}
@@ -73,6 +73,7 @@ class PyfficeIGES(PyfficeDocument):
         where ``raw`` is the list of section lines belonging to it.
         """
         import re as _re
+
         if self._content is None:
             self.read()
         # IGES fixed-format: data (padded to col 64) followed by either
@@ -90,10 +91,12 @@ class PyfficeIGES(PyfficeDocument):
         def _flush():
             nonlocal current_lines, current_type
             if current_lines:
-                entities.append({
-                    "type": current_type or "unknown",
-                    "raw": list(current_lines),
-                })
+                entities.append(
+                    {
+                        "type": current_type or "unknown",
+                        "raw": list(current_lines),
+                    }
+                )
                 current_lines = []
                 current_type = None
 
@@ -175,6 +178,7 @@ class PyfficeIGES(PyfficeDocument):
         """
         import json as _json
         from os.path import exists
+
         if file_ is None:
             file_ = self.file_path
         if not file_ or not exists(file_):
@@ -213,6 +217,7 @@ class PyfficeIGES(PyfficeDocument):
             logma.warning("PyfficeIGES.save: no path available")
             return
         import json as _json
+
         doc = self.to_dict()
         with open(path, "w") as f:
             _json.dump(doc, f, indent=2, default=str)

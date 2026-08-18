@@ -13,7 +13,7 @@ logma.off()
 
 
 class PyfficeSCAD(PyfficeDocument):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """OpenSCAD script document."""
 
     def __init__(self, path: Optional[str] = None, content: Optional[str] = None) -> None:
@@ -58,6 +58,7 @@ class PyfficeSCAD(PyfficeDocument):
     def open_file(self, file_=None):
         import json as _json
         from os.path import exists
+
         if file_ is None:
             file_ = self.file_path
         if not file_ or not exists(file_):
@@ -80,6 +81,7 @@ class PyfficeSCAD(PyfficeDocument):
             logma.warning(f"{self.__class__.__name__}.save: no path available")
             return
         import json as _json
+
         doc = self.to_dict()
         with open(path, "w") as f:
             _json.dump(doc, f, indent=2, default=str)

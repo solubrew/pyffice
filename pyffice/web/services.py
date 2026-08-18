@@ -34,7 +34,7 @@ pxcfg = join(here, "_data_", "services.yaml")
 
 
 class PyfficeService(PyfficeDocument):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """"""
 
     def __init__(self, cfg=None) -> None:
@@ -46,10 +46,10 @@ class PyfficeService(PyfficeDocument):
 
     def load_document(self, document=None) -> Self:
         """Load document into this document.
-        
+
         Args:
             document: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -64,10 +64,10 @@ class PyfficeService(PyfficeDocument):
 
     def set_key(self, key) -> Self:
         """Set the key.
-        
+
         Args:
             key: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -78,10 +78,10 @@ class PyfficeService(PyfficeDocument):
 
     def set_service(self, service) -> Self:
         """Set the service.
-        
+
         Args:
             service: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -89,6 +89,7 @@ class PyfficeService(PyfficeDocument):
             self.add_change("service", self.service, service)
             self.service = service
         return self
+
 
 # ====================================================================================================================||
 

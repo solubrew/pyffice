@@ -37,7 +37,7 @@ pxcfg = join(here, "_data_", "calendars.yaml")
 
 
 class PyfficeCalendar(PyfficeDocumentManager):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """"""
 
     def __init__(self, cfg=None) -> None:
@@ -54,10 +54,10 @@ class PyfficeCalendar(PyfficeDocumentManager):
 
     def add_event(self, event) -> Self:
         """Add a event.
-        
+
         Args:
             event: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -77,10 +77,10 @@ class PyfficeCalendar(PyfficeDocumentManager):
 
     def del_event(self, event) -> None:
         """Remove the event.
-        
+
         Args:
             event: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -96,10 +96,10 @@ class PyfficeCalendar(PyfficeDocumentManager):
 
     def load_document(self, document=None) -> Self:
         """Load document into this document.
-        
+
         Args:
             document: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -120,10 +120,10 @@ class PyfficeCalendar(PyfficeDocumentManager):
 
     def set_date_end(self, date) -> Self:
         """Set the date end.
-        
+
         Args:
             date: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -134,10 +134,10 @@ class PyfficeCalendar(PyfficeDocumentManager):
 
     def set_date_start(self, date) -> Self:
         """Set the date start.
-        
+
         Args:
             date: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -153,10 +153,10 @@ class PyfficeCalendar(PyfficeDocumentManager):
 
     def set_tasks(self, tasks) -> None:
         """Set the tasks.
-        
+
         Args:
             tasks: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -164,10 +164,10 @@ class PyfficeCalendar(PyfficeDocumentManager):
 
     def set_time_unit(self, time_unit) -> Self:
         """Set the time unit.
-        
+
         Args:
             time_unit: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -187,10 +187,10 @@ class PyfficeCalendar(PyfficeDocumentManager):
 
     def set_time_scale(self, time_scale) -> Self:
         """Set the time scale.
-        
+
         Args:
             time_scale: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -200,6 +200,7 @@ class PyfficeCalendar(PyfficeDocumentManager):
             self.add_change("time_scale", time_scale.scale_unit, time_scale)
             self.time_scale = time_scale
         return self
+
 
 # ====================================================================================================================||
 

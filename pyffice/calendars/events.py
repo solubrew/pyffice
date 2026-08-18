@@ -35,7 +35,7 @@ pxcfg = join(here, "_data_", "events.yaml")
 
 
 class PyfficeTimeUnit(PyfficeUnit):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """"""
 
     def __init__(self, cfg=None) -> None:
@@ -57,7 +57,7 @@ class PyfficeTimeUnit(PyfficeUnit):
 
     def get_centuries(self) -> Any:
         """Return the centuries.
-        
+
         Returns:
             Self for chaining.
         """
@@ -71,7 +71,7 @@ class PyfficeTimeUnit(PyfficeUnit):
 
     def get_days(self) -> Any:
         """Return the days.
-        
+
         Returns:
             Self for chaining.
         """
@@ -85,7 +85,7 @@ class PyfficeTimeUnit(PyfficeUnit):
 
     def get_decades(self) -> Any:
         """Return the decades.
-        
+
         Returns:
             Self for chaining.
         """
@@ -99,7 +99,7 @@ class PyfficeTimeUnit(PyfficeUnit):
 
     def get_hours(self) -> Any:
         """Return the hours.
-        
+
         Returns:
             Self for chaining.
         """
@@ -113,7 +113,7 @@ class PyfficeTimeUnit(PyfficeUnit):
 
     def get_minutes(self) -> Any:
         """Return the minutes.
-        
+
         Returns:
             Self for chaining.
         """
@@ -127,7 +127,7 @@ class PyfficeTimeUnit(PyfficeUnit):
 
     def get_months(self) -> Any:
         """Return the months.
-        
+
         Returns:
             Self for chaining.
         """
@@ -141,7 +141,7 @@ class PyfficeTimeUnit(PyfficeUnit):
 
     def get_seconds(self) -> Any:
         """Return the seconds.
-        
+
         Returns:
             Self for chaining.
         """
@@ -155,7 +155,7 @@ class PyfficeTimeUnit(PyfficeUnit):
 
     def get_weeks(self) -> Any:
         """Return the weeks.
-        
+
         Returns:
             Self for chaining.
         """
@@ -169,7 +169,7 @@ class PyfficeTimeUnit(PyfficeUnit):
 
     def get_years(self) -> Any:
         """Return the years.
-        
+
         Returns:
             Self for chaining.
         """
@@ -183,10 +183,10 @@ class PyfficeTimeUnit(PyfficeUnit):
 
     def load_unit(self, unit) -> Self:
         """Load a unit dict into this document.
-        
+
         Args:
             unit: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -210,10 +210,10 @@ class PyfficeTimeUnit(PyfficeUnit):
 
     def set_scale_unit(self, scale_unit) -> Self:
         """Set the scale unit.
-        
+
         Args:
             scale_unit: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -241,10 +241,10 @@ class PyfficeTimeUnit(PyfficeUnit):
 
     def set_time_end(self, end_time) -> Self:
         """Set the time end.
-        
+
         Args:
             end_time: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -255,10 +255,10 @@ class PyfficeTimeUnit(PyfficeUnit):
 
     def set_time_start(self, start_time) -> Self:
         """Set the time start.
-        
+
         Args:
             start_time: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -267,9 +267,11 @@ class PyfficeTimeUnit(PyfficeUnit):
             self.start_time = start_time
         return self
 
+
 class PyfficeEvent(PyfficeUnit):
     """"""
-    SERIALIZATION_VERSION = (1, 0, 0)
+
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg=None) -> None:
         """"""
@@ -283,10 +285,10 @@ class PyfficeEvent(PyfficeUnit):
 
     def load_unit(self, unit) -> Self:
         """Load a unit dict into this document.
-        
+
         Args:
             unit: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -301,10 +303,10 @@ class PyfficeEvent(PyfficeUnit):
 
     def set_end_dttm(self, end_dttm) -> Self:
         """Set the end dttm.
-        
+
         Args:
             end_dttm: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -315,10 +317,10 @@ class PyfficeEvent(PyfficeUnit):
 
     def set_event(self, event) -> Self:
         """Set the event.
-        
+
         Args:
             event: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -329,10 +331,10 @@ class PyfficeEvent(PyfficeUnit):
 
     def set_attendance_location(self, location) -> Self:
         """Set the attendance location.
-        
+
         Args:
             location: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -343,10 +345,10 @@ class PyfficeEvent(PyfficeUnit):
 
     def set_start_dttm(self, start_dttm) -> Self:
         """Set the start dttm.
-        
+
         Args:
             start_dttm: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -363,7 +365,8 @@ class PyfficeTask(PyfficeUnit):
     Constructed as ``PyfficeTask(payload)`` — used by PyfficeAlarm to
     wrap acknowledge / notify / postpone / postpone-list payloads.
     """
-    SERIALIZATION_VERSION = (1, 0, 0)
+
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
 
     def __init__(self, cfg=None) -> None:
         """Initialize a task with an optional dict-shaped payload."""

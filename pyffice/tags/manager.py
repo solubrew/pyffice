@@ -35,7 +35,7 @@ pxcfg = join(here, "_data_", ".yaml")
 
 
 class PyfficeTagsManager(PyfficeDocumentManager):
-    SERIALIZATION_VERSION = (1, 0, 0)
+    SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """"""
 
     def __init__(self, cfg=None) -> None:
@@ -46,12 +46,12 @@ class PyfficeTagsManager(PyfficeDocumentManager):
 
     def add_tag(self, name, description="", group=None) -> Self:
         """Attach a tag to this document.
-        
+
         Args:
             name: Parameter.
             description: Parameter.
             group: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -63,10 +63,10 @@ class PyfficeTagsManager(PyfficeDocumentManager):
 
     def load_document(self, document=None) -> Self:
         """Load document into this document.
-        
+
         Args:
             document: Parameter.
-        
+
         Returns:
             Self for chaining.
         """
@@ -76,6 +76,7 @@ class PyfficeTagsManager(PyfficeDocumentManager):
         super().load_document(document)
         self.set_tags(document.get("tags", []))
         return self
+
 
 # ====================================================================================================================||
 
