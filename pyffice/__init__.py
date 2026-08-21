@@ -21,7 +21,6 @@ PATCH)`` so callers can compare programmatically:
         ...
 """
 
-
 from typing import Any
 
 # Lazy __getattr__ proxy decouples package import from
@@ -55,7 +54,7 @@ def __dir__() -> Any:
     return sorted(list(globals().keys()) + list(_LAZY_EXPORTS.keys()))
 
 
-__version_info__ = (0, 1, 0)
+__version_info__ = (0, 0, 1)
 __version__ = ".".join(str(p) for p in __version_info__)
 
 __all__ = [

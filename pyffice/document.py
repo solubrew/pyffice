@@ -34,14 +34,12 @@ from pycurity.pyhash import text_hashing_function
 from squirl.objnql import txtonql
 from typing import Any
 from typing_extensions import Self
-
-# MissingPathError / InvalidConfigurationError imported locally inside
-# methods that raise them (T-NEW-055) to avoid the circular import
-# (document.py <-> pyffice.pyffice).
+from pycurity.pyhash import decode64
 
 # ====================================================================================================================||
 here = join(dirname(__file__), "")  # ||
 log = True
+debug = True
 logma = Logma(__name__)
 if not log:
     logma.off()
@@ -375,7 +373,7 @@ class PyfficeUnit(object):
         self.set_hash(unit.get("hash", None))
         self.set_saved(True)
         self.set_syntax(unit.get("syntax", None))
-        self.set_location(unit.get("location", None))
+        self.set_location(unit.get("location", "internal"))
         self.set_modon(unit.get("meta_data", {}).get("modon", None))
         self.set_name(unit.get("name", None))
         self.set_path(unit.get("path", None))
@@ -859,6 +857,8 @@ class PyfficeDocument(PyfficeUnit):
         self.document = self.config.select("template").override(self.config.select("document").dikt)
         self.cache = None
         self.compatibility = None
+        self.file_format = None  # file format refers to the format in which it is stored
+        self.syntax = None  # syntax refers to the format of the data that is being stored
         self.data = None
         self.doc_types = None
         self.document_type = None
@@ -935,43 +935,6 @@ class PyfficeDocument(PyfficeUnit):
                 self.set_data(loaded)
         return self
 
-    def _port_for_ext(self, ext) -> Any:
-        """Return a fresh Port instance for the given extension, or
-        None if no Port class matches the extension."""
-        if not ext:
-            return None
-        # Local imports avoid cycles
-        try:
-            from pyffice.ports.ports import (
-                PyfficePortExcel,
-                PyfficePortCSV,
-                PyfficePortImage,
-                PyfficePortDia,
-                PyfficePortFileSystem,
-            )
-        except ImportError:
-            return None
-
-        mapping = {
-            ".xlsx": PyfficePortExcel,
-            ".xlsm": PyfficePortExcel,
-            ".xls": PyfficePortExcel,
-            ".csv": PyfficePortCSV,
-            ".tsv": PyfficePortCSV,
-            ".png": PyfficePortImage,
-            ".jpg": PyfficePortImage,
-            ".jpeg": PyfficePortImage,
-            ".gif": PyfficePortImage,
-            ".bmp": PyfficePortImage,
-            ".svg": PyfficePortImage,
-            ".webp": PyfficePortImage,
-            ".dia": PyfficePortDia,
-        }
-        cls = mapping.get(ext)
-        if cls is None:
-            return PyfficePortFileSystem()
-        return cls()
-
     def open_file(self, file_path, open_=True) -> Any:
         """Open a file and return its raw text content.
 
@@ -1044,12 +1007,21 @@ class PyfficeDocument(PyfficeUnit):
         self.load_unit(document)
         logma.warning(f"Document {document}")
         data = document.get("data", {}) or {}
+        # if isinstance(data, str):
+        #     data = decode64(bytes(data)).decode("utf-8")
+        logma.info(f"Data {data}")
+        if not isinstance(data, dict):
+            logma.warning(f"Data {data}")
+            if debug:
+                raise Exception(f"Data Failed {type(data)}")
+            data = {}
         self.set_content(data.get("content", {}))
         meta_data = document.get("meta_data", {}) or {}
         self.set_compatibility(meta_data.get("compatibility", "pyffice"))
         self.set_document_type(meta_data.get("document_type", "text"))
         self.set_data(data)
-        self.set_file_path(document.get("path", None))
+        self.set_location(document.get("location", "internal"))
+        self.set_file_path(document.get("file_path", None))
         self.set_version(document.get("version", None))
         return self
 
@@ -1377,6 +1349,43 @@ class PyfficeDocument(PyfficeUnit):
         for i, (text, emb) in enumerate(zip(content.split("\n"), embeddings)):
             self.vectors[i] = {"embeddings": emb, "text": text}
         return self
+
+    def _port_for_ext(self, ext) -> Any:
+        """Return a fresh Port instance for the given extension, or
+        None if no Port class matches the extension."""
+        if not ext:
+            return None
+        # Local imports avoid cycles
+        try:
+            from pyffice.ports.ports import (
+                PyfficePortExcel,
+                PyfficePortCSV,
+                PyfficePortImage,
+                PyfficePortDia,
+                PyfficePortFileSystem,
+            )
+        except ImportError:
+            return None
+
+        mapping = {
+            ".xlsx": PyfficePortExcel,
+            ".xlsm": PyfficePortExcel,
+            ".xls": PyfficePortExcel,
+            ".csv": PyfficePortCSV,
+            ".tsv": PyfficePortCSV,
+            ".png": PyfficePortImage,
+            ".jpg": PyfficePortImage,
+            ".jpeg": PyfficePortImage,
+            ".gif": PyfficePortImage,
+            ".bmp": PyfficePortImage,
+            ".svg": PyfficePortImage,
+            ".webp": PyfficePortImage,
+            ".dia": PyfficePortDia,
+        }
+        cls = mapping.get(ext)
+        if cls is None:
+            return PyfficePortFileSystem()
+        return cls()
 
 
 class PyfficeDocumentManager(PyfficeDocument):

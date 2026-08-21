@@ -45,6 +45,7 @@ from pyffice.web.web import PyfficeWebBrowser
 from pyffice.filesystems.filesystems import PyfficeFileSystem
 from pyffice.config.config import PyfficeConfig
 from pyffice.updates.updates import PyfficeUpdater
+from pyffice.web.web import PyfficeWebPage
 
 # ====================================================================================================================||
 here = join(dirname(__file__), "")  # ||
@@ -248,6 +249,14 @@ class PyfficeCodex(PyfficeDocumentManager):
         config = PyfficeWebConfig(cfg)
         self.documents[config.did] = config
         return config
+
+    def init_web_page(self, cfg: Optional[dict[str, Any]] = None) -> Optional[Any]:
+        """"""
+        cfg = cfg or {}
+        cfg["codex"] = self
+        page = PyfficeWebPage(cfg)
+        self.documents[page.did] = page
+        return page
 
     def init_contacts(self, cfg: Optional[dict[str, Any]] = None) -> Optional[Any]:
         """Initialize a contacts/rolodex document."""

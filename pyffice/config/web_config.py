@@ -45,6 +45,24 @@ class PyfficeWebConfig(PyfficeConfig):
         self.parent = parent
         super().__init__(cfg)
         self.config.override(kahndor.Instruct(PXCFG).select("PyfficeConfig").override(cfg))
+        self.library = None
+        self.profile_manager = None
+
+    def load_document(self, document=None) -> Any:
+        """ """
+        document = document or {}
+        document = self.config.override(document).get("document", {}) or {}
+        super().load_document(document)
+        return self
+
+    def save(self, path=None, format_=None, encrypt=None):
+        """"""
+        super().save(path, format_, encrypt)
+
+    def to_dict(self):
+        """"""
+        doc = super().to_dict()
+        return self._canonicalize(doc)
 
 
 # ====================================================================================================================||

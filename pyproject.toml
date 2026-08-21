@@ -4,14 +4,28 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyffice"
-version = "0.1.0"
+version = "0.0.1"
 description = "Unified Python interface for document processing, CAD, media, and office automation."
-readme = "README.md"
+readme = { file = "README.md", content-type = "text/markdown" }
 license = {text = "MIT"}
-authors = [
-    {name = "Pyffice Team"}
+authors = [{ name = "Maintainers", email = "solubrew@solutionsbrewer.com" }]
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
 ]
-requires-python = ">=3.10"
 dependencies = [
      "subtrix>=0.0.1",
      "adafruit-ampy==1.1.0",

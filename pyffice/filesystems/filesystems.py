@@ -133,14 +133,27 @@ class PyfficeFileSystem(PyfficeDocumentManager):
             Self for chaining.
         """
         logma.info(f"Load Document {document}")
-        if document is None:
-            document = self.config.dikt.get("document", {})
-            if document is None:
-                document = {}
+        document = document or self.config.dikt.get("document", {}) or {}
         document["location"] = "external"
+        logma.json(document)
         super().load_document(document)
+        self.set_file_path(document.get("data", {}).get("path", None))
         self.set_tree(document.get("tree", {}))
         self.set_table(document.get("table", {}))
+        return self
+
+    def save(self, path=None, syntax=None, encrypt_key=None) -> Self:
+        """Save the document.
+
+        Args:
+            path: Parameter.
+            syntax: Parameter.
+            encrypt_key: Parameter.
+
+        Returns:
+            Self for chaining.
+        """
+        super().save(path, syntax, encrypt_key)
         return self
 
     def set_tree(self, tree) -> Self:
@@ -178,7 +191,6 @@ class PyfficeFileSystem(PyfficeDocumentManager):
         Returns:
             Self for chaining.
         """
-        self.set_file_path(file)
         self.set_root(file)
         self.set_directories()
         self.set_files()
@@ -243,6 +255,12 @@ class PyfficeFileSystem(PyfficeDocumentManager):
             self.files = files
         return self
 
+    def set_file_path(self, file_path) -> Self:
+        """"""
+        self.set_root(file_path)
+        super().set_file_path(file_path)
+        return self
+
     def set_root(self, root=None) -> Self:
         """Set the root.
 
@@ -268,8 +286,11 @@ class PyfficeFileSystem(PyfficeDocumentManager):
             Self for chaining.
         """
         doc = super().to_dict()
+        path = self.file_path
+        if isinstance(path, Path):
+            path = str(path)
         doc["data"] = {
-            "path": self.path,
+            "path": path,
             "tree": self.tree,
             "table": {
                 "directories": self.directories,

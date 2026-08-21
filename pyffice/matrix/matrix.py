@@ -49,6 +49,25 @@ class PyfficeMatrix(PyfficeDocumentManager):
     SERIALIZATION_VERSION = (0, 0, 1, 0, 1, 2)
     """A Pyffice Matrix is a top level pyffice document type that can be included in a Pyffice Book"""
 
+    @classmethod
+    def from_list(cls, data: list[list[Any]]) -> PyfficeMatrix:
+        """Create matrix from 2D list."""
+        if not data:
+            return cls()
+        rows = len(data)
+        cols = len(data[0]) if data[0] else 0
+        matrix = cls(rows=rows, cols=cols)
+        matrix._data = [[float(cell) if cell is not None else 0.0 for cell in row] for row in data]
+        return matrix
+
+    @classmethod
+    def identity(cls, size: int) -> PyfficeMatrix:
+        """Create identity matrix."""
+        matrix = cls(rows=size, cols=size)
+        for i in range(size):
+            matrix._data[i][i] = 1.0
+        return matrix
+
     def __init__(self, cfg=None) -> None:
         """"""
         super().__init__(cfg)
@@ -60,6 +79,16 @@ class PyfficeMatrix(PyfficeDocumentManager):
         self.formula_library = None
         self.objects = []
         self.sheets = {}
+
+    def add(self, other: "PyfficeMatrix") -> PyfficeMatrix:
+        """Add two matrices."""
+        if self.rows != other.rows or self.cols != other.cols:
+            raise ValueError("Matrix dimensions must match")
+        result = PyfficeMatrix(rows=self.rows, cols=self.cols)
+        for i in range(self.rows):
+            for j in range(self.cols):
+                result._data[i][j] = self._data[i][j] + other._data[i][j]
+        return result
 
     def add_chart(self, chart) -> Self:
         """Add a chart.
@@ -168,7 +197,7 @@ class PyfficeMatrix(PyfficeDocumentManager):
         (backward compatibility with the prior placeholder return).
         """
         if not path:
-            return "excel"
+            return None
         lower = str(path).lower()
         if lower.endswith((".xlsx", ".xls", ".xlsm", ".xlsb")):
             return "excel"
@@ -176,7 +205,7 @@ class PyfficeMatrix(PyfficeDocumentManager):
             return "openoffice"
         if lower.endswith(".csv"):
             return "csv"
-        return "excel"
+        return None
 
     def export(self, format_=None) -> None:
         """Export .
@@ -315,6 +344,10 @@ class PyfficeMatrix(PyfficeDocumentManager):
         data = importer.open_file(path, if_data_only, read_only, keep_vba)
         return data
 
+    def get(self, row: int, col: int) -> float:
+        """Get cell value."""
+        return self._data[row][col]
+
     def load_csv(self, file_path) -> None:
         """Load CSV file into spreadsheet"""
         import csv
@@ -381,8 +414,7 @@ class PyfficeMatrix(PyfficeDocumentManager):
         Returns:
             Self for chaining.
         """
-        if document is None:
-            document = self.config.dikt.get("document", {}) or {}
+        document = document or self.config.dikt.get("document", {}) or {}
         logma.json(document)
         super().load_document(document)
         logma.info(f"Load Pyffice Matrix")
@@ -494,6 +526,396 @@ class PyfficeMatrix(PyfficeDocumentManager):
             pyqt.QMessageBox.warning(self, "Error", "openpyxl not installed. Please install: pip install openpyxl")
         except (OSError, KeyError, ValueError) as e:
             pyqt.QMessageBox.warning(self, "Error", f"Failed to load Excel: {e}")
+
+    def load_from_config(self, cfg) -> None:
+        """Load spreadsheet data from configuration"""
+        if "data" in cfg:
+            self.load_data(cfg["data"])
+        if "sheets" in cfg:
+            for sheet_name, sheet_data in cfg["sheets"].items():
+                self.add_sheet(sheet_name, sheet_data)
+
+    def load_from_file(self, file_path) -> None:
+        """Load spreadsheet from file"""
+        try:
+            if file_path.endswith(".csv"):
+                self.load_csv(file_path)
+            elif file_path.endswith(".xlsx") or file_path.endswith(".xls"):
+                self.load_excel(file_path)
+            else:
+                pyqt.QMessageBox.warning(self, "Error", "Unsupported file format")
+        except (OSError, ValueError) as e:
+            pyqt.QMessageBox.warning(self, "Error", f"Failed to load file: {e}")
+
+    def multiply(self, other: "PyfficeMatrix") -> PyfficeMatrix:
+        """Multiply two matrices."""
+        if self.cols != other.rows:
+            raise ValueError("Matrix dimensions incompatible for multiplication")
+        result = PyfficeMatrix(rows=self.rows, cols=other.cols)
+        for i in range(self.rows):
+            for j in range(other.cols):
+                total = 0.0
+                for k in range(self.cols):
+                    total += self._data[i][k] * other._data[k][j]
+                result._data[i][j] = total
+        return result
+
+    def open_file(self, file) -> None:
+        """Open file.
+
+        Args:
+            file: Parameter.
+
+        Returns:
+            Self for chaining.
+        """
+        from pyffice.pyffice import UnknownFileTypeError
+
+        if file is None:
+            file = self.file_path
+        if file is None or file == "":
+            return
+        if exists(file):
+            self.set_file_path(file)
+        else:
+            return
+        logma.info(f"File {file}")
+        file_type = self.determine_file_type(file)
+        if file.endswith(".csv"):
+            self.set_syntax("csv")
+            data = self.file_import_csv(file)
+        elif file.endswith(".xlsx") or file.endswith(".xls"):
+            self.set_syntax("excel")
+            data = self.file_import_excel(file)
+        elif file.endswith(".gsheet"):
+            self.set_syntax("gsheet")
+            data = self.file_import_gsheet(file)
+        else:
+            logma.info(f"File Path {self.file_path}")
+            raise UnknownFileTypeError(f"Unknown File Type {file_type} for file {file}")
+        self.data = data
+
+    def open_file_csv(self) -> Self:
+        """Open a CSV file."""
+        if not self.file_path:
+            return self
+        import csv
+
+        # Placeholder - would read CSV
+        return self
+
+    def open_file_excel(self) -> Self:
+        """Open an Excel file."""
+        if not self.file_path:
+            return self
+        # Placeholder - would use openpyxl
+        return self
+
+    def sanitize_sheet_name(self, sheet_name, compatibility="excel") -> Any:
+        """
+        Sanitizes the sheet name to conform to Excel's limitations.
+
+        :param sheet_name: Name provided by the user
+        :return: Sanitized name
+        """
+        if compatibility == "excel":
+            invalid_chars = ["\\", "/", "*", "[", "]", ":", "?"]
+            sanitized_name = "".join(c if c not in invalid_chars else "_" for c in sheet_name)
+            return sanitized_name[:31]  # Excel sheet names are limited to 31 characters
+        sanitized_name = sheet_name
+        return sanitized_name
+
+    def save(self, path=None, syntax=None, encrypt_key=None) -> Self:
+        """Save the document.
+
+        Args:
+            path: Parameter.
+            syntax: Parameter.
+            encrypt_key: Parameter.
+
+        Returns:
+            Self for chaining.
+        """
+        super().save(path, syntax, encrypt_key)
+        # match syntax:
+        #     case "excel":
+        #         self.save_excel(path)
+        #     case "csv":
+        #         self.save_csv(path)
+        #     case "gsheet":
+        #         self.save_gsheet(path)
+        # if i store always at the manager level then is that the right thing to do?
+        return self
+
+    def save_as(self, name, path) -> Self:
+        """Save the document.
+
+        Args:
+            name: Parameter.
+            path: Parameter.
+
+        Returns:
+            Self for chaining.
+        """
+        super().save_as(path)
+        return self
+
+    def save_as_excel(self, file_path) -> Self:
+        """Save as Excel file (.xlsx)"""
+        try:
+            if self.document:
+                # Update document data from table
+                self.document.data = self.extract_table_data()
+                # Save using PyfficeMatrix
+                self.document.file_path = file_path
+                self.document.save_file()
+            else:
+                # Fallback: save using basic method
+                import openpyxl
+
+                wb = openpyxl.Workbook()
+                ws = wb.active
+                data = self.extract_table_data()
+                for row_idx, row_data in enumerate(data, start=1):
+                    for col_idx, cell_value in enumerate(row_data, start=1):
+                        ws.cell(row=row_idx, column=col_idx, value=cell_value)
+                wb.save(file_path)
+            logma.info(f"Saved Excel file: {file_path}")
+        except (OSError, AttributeError) as e:
+            logma.error(f"Error saving Excel file: {e}")
+        return self
+
+    def save_as_ods(self, file_path) -> Self:
+        """Save as OpenDocument Spreadsheet (.ods)"""
+        try:
+            if self.document:
+                # Update document data from table
+                self.document.data = self.extract_table_data()
+                # Save using PyfficeMatrix
+                self.document.file_path = file_path
+                self.document.save_as_ods()
+            else:
+                logma.warning("ODS export requires PyfficeMatrix document")
+        except (AttributeError, OSError) as e:
+            logma.error(f"Error saving ODS file: {e}")
+        return self
+
+    def save_as_csv(self, file_path, delimiter=",") -> Self:
+        """Save as CSV file"""
+        try:
+            import csv
+
+            data = self.extract_table_data()
+            with open(file_path, "w", newline="", encoding="utf-8") as f:
+                writer = csv.writer(f, delimiter=delimiter)
+                writer.writerows(data)
+            logma.info(f"Saved CSV file: {file_path}")
+        except (OSError, ValueError) as e:
+            logma.error(f"Error saving CSV file: {e}")
+        return self
+
+    def save_as_tsv(self, file_path) -> Any:
+        """Save as TSV (Tab-Separated Values) file"""
+        return self.save_as_csv(file_path, delimiter="\t")
+
+    def save_csv(self, path) -> Self:
+        """Save as CSV file."""
+        if not path:
+            return self
+        # Placeholder - would write CSV
+        return self
+
+    def save_copy_as(self, name, path=None) -> Self:
+        """Save the document.
+
+        Args:
+            name: Parameter.
+            path: Parameter.
+
+        Returns:
+            Self for chaining.
+        """
+        super().save_copy_as(name, path)
+        return self
+
+    def save_document(self, file_path=None) -> Self:
+        """Save the current spreadsheet to a file"""
+        if file_path is None:
+            file_path = self.file_path
+
+        if file_path is None:
+            logma.warning("No file path specified for saving")
+            return self
+
+        # Determine file format from extension
+        file_ext = file_path.split(".")[-1].lower()
+
+        if file_ext in ["xlsx", "xls"]:
+            self.save_as_excel(file_path)
+        elif file_ext == "ods":
+            self.save_as_ods(file_path)
+        elif file_ext == "csv":
+            self.save_as_csv(file_path)
+        elif file_ext == "tsv":
+            self.save_as_tsv(file_path)
+        else:
+            logma.warning(f"Unsupported file format: {file_ext}")
+
+        return self
+
+    def save_excel(self, path) -> None:
+        """Save as Excel file."""
+        porter = PyfficePortExcel({"parent": self})
+        porter.file_export(self, path)
+
+    def save_gsheet(self, path) -> Self:
+        """Save to Google Sheets."""
+        if not path:
+            return self
+        # Placeholder - would use gspread
+        return self
+
+    def save_file(self) -> None:
+        """Save spreadsheet to file"""
+        file_path, _ = pyqt.QFileDialog.getSaveFileName(
+            self, "Save Spreadsheet", "", "CSV Files (*.csv);;Excel Files (*.xlsx);;All Files (*)"
+        )
+
+        if file_path:
+            self.save_to_file(file_path)
+
+    def set(self, row: int, col: int, value: float) -> None:
+        """Set cell value."""
+        self._data[row][col] = value
+
+    def set_charts(self, charts) -> Self:
+        """Set chart objects."""
+        self.charts = charts
+        return self
+
+    def set_compatibility(self, compatibility) -> Self:
+        """Set the compatibility.
+
+        Args:
+            compatibility: Parameter.
+
+        Returns:
+            Self for chaining.
+        """
+        self.compatibility = compatibility
+        return self
+
+    def set_formula_library(self, library=None) -> Self:
+        """Set the formula library.
+
+        Args:
+            library: Parameter.
+
+        Returns:
+            Self for chaining.
+        """
+        self.formulas_library = PyfficeFormulasLibrary(library)
+        return self
+
+    def set_objects(self, objects) -> Self:
+        """Set objects."""
+        self.objects = objects
+        return self
+
+    def set_porter(self, porter) -> Self:
+        """Set the porter.
+
+        Args:
+            porter: Parameter.
+
+        Returns:
+            Self for chaining.
+        """
+        cfg = {}
+        porter = PyfficePortExcel(cfg)
+        if porter != self.porter:
+            self.add_change("porter", self.porter, porter)
+            self.porter = porter
+        return self
+
+    def set_sheets(self, sheets) -> Self:
+        """Set the sheets.
+
+        Args:
+            sheets: Parameter.
+
+        Returns:
+            Self for chaining.
+        """
+        for sheet in sheets.get("sheets", []):
+            self.sheets[sheet["name"]] = PyfficeSpreadSheet(sheet)
+        return self
+
+    def to_dict(self) -> Any:
+        """Convert this document to dict.
+
+        Returns:
+            Self for chaining.
+        """
+        doc = super().to_dict()
+        if isinstance(self.data, DataFrame):
+            doc["data"]["table"] = self.data.values.tolist()
+        else:
+            doc["data"]["table"] = self.data
+        doc["data"]["compatibility"] = self.compatibility
+        doc["data"]["documents"] = {x: y.to_dict() for x, y in self.documents.items()}
+        doc["data"]["document_type"] = "matrix"
+        # The line below used to attempt a redundant DataFrame→list
+        # conversion on `data["content"]["data"]`, but ``_canonicalize``
+        # (called via ``super().to_dict()`` above) already mirrors
+        # ``data["table"]`` into ``data["content"]`` — so the access
+        # ``data["content"]["data"]`` raises TypeError on every call
+        # (silently logged). The line-793 conversion above is the
+        # single source of truth for table→list-of-lists.
+        return self._canonicalize(doc)
+
+    def to_json_schema(self) -> dict:
+        """Convert the matrix (workbook) to JSON Schema format.
+
+        Returns:
+            dict: JSON Schema representation of the matrix.
+        """
+        schema = super().to_json_schema()
+        schema["title"] = self.name or "PyfficeMatrix"
+        schema["properties"].update(
+            {
+                "sheets": {
+                    "type": "object",
+                    "description": "Dictionary of sheet names to PyfficeSpreadSheet objects",
+                },
+                "active_worksheet": {
+                    "type": "string",
+                    "description": "Name of active worksheet",
+                },
+                "compatibility": {"type": "string", "default": self.compatibility},
+                "charts": {
+                    "type": "array",
+                    "description": "List of charts in the workbook",
+                },
+                "objects": {
+                    "type": "array",
+                    "description": "List of objects (shapes, tables, images)",
+                },
+            }
+        )
+        return schema
+
+    def transpose(self) -> PyfficeMatrix:
+        """Return transpose of matrix."""
+        result = PyfficeMatrix(rows=self.cols, cols=self.rows)
+        for i in range(self.rows):
+            for j in range(self.cols):
+                result._data[j][i] = self._data[i][j]
+        return result
+
+    def to_list(self) -> list[list[float]]:
+        """Return matrix as 2D list."""
+        return [row[:] for row in self._data]
 
     def _extract_charts_from_worksheet(self, ws):
         """T-NEW-066: convert openpyxl charts on ``ws`` to
@@ -620,422 +1042,6 @@ class PyfficeMatrix(PyfficeDocumentManager):
 
         chart = PyfficeChart(cfg)
         return chart
-
-    def load_from_config(self, cfg) -> None:
-        """Load spreadsheet data from configuration"""
-        if "data" in cfg:
-            self.load_data(cfg["data"])
-        if "sheets" in cfg:
-            for sheet_name, sheet_data in cfg["sheets"].items():
-                self.add_sheet(sheet_name, sheet_data)
-
-    def load_from_file(self, file_path) -> None:
-        """Load spreadsheet from file"""
-        try:
-            if file_path.endswith(".csv"):
-                self.load_csv(file_path)
-            elif file_path.endswith(".xlsx") or file_path.endswith(".xls"):
-                self.load_excel(file_path)
-            else:
-                pyqt.QMessageBox.warning(self, "Error", "Unsupported file format")
-        except (OSError, ValueError) as e:
-            pyqt.QMessageBox.warning(self, "Error", f"Failed to load file: {e}")
-
-    def open_file(self, file) -> None:
-        """Open file.
-
-        Args:
-            file: Parameter.
-
-        Returns:
-            Self for chaining.
-        """
-        from pyffice.pyffice import UnknownFileTypeError
-
-        if file is None:
-            file = self.file_path
-        self.set_syntax("file")
-        if exists(file):
-            self.set_file_path(file)
-        file_type = self.determine_file_type(file)
-        if file.endswith(".csv"):
-            data = self.file_import_csv(file)
-        elif file.endswith(".xlsx") or file.endswith(".xls"):
-            data = self.file_import_excel(file)
-        elif file.endswith(".gsheet"):
-            data = self.file_import_gsheet(file)
-        else:
-            raise UnknownFileTypeError(f"Unknown File Type {file_type} for file {file}")
-        self.data = data
-        # super().open_file(path)
-
-    def open_file_csv(self) -> Self:
-        """Open a CSV file."""
-        if not self.file_path:
-            return self
-        import csv
-
-        # Placeholder - would read CSV
-        return self
-
-    def open_file_excel(self) -> Self:
-        """Open an Excel file."""
-        if not self.file_path:
-            return self
-        # Placeholder - would use openpyxl
-        return self
-
-    def sanitize_sheet_name(self, sheet_name, compatibility="excel") -> Any:
-        """
-        Sanitizes the sheet name to conform to Excel's limitations.
-
-        :param sheet_name: Name provided by the user
-        :return: Sanitized name
-        """
-        if compatibility == "excel":
-            invalid_chars = ["\\", "/", "*", "[", "]", ":", "?"]
-            sanitized_name = "".join(c if c not in invalid_chars else "_" for c in sheet_name)
-            return sanitized_name[:31]  # Excel sheet names are limited to 31 characters
-        sanitized_name = sheet_name
-        return sanitized_name
-
-    def save(self, path=None, syntax=None, encrypt_key=None) -> Self:
-        """Save the document.
-
-        Args:
-            path: Parameter.
-            syntax: Parameter.
-            encrypt_key: Parameter.
-
-        Returns:
-            Self for chaining.
-        """
-        super().save(path, syntax, encrypt_key)
-        match syntax:
-            case "excel":
-                self.save_excel(path)
-            case "csv":
-                self.save_csv(path)
-            case "gsheet":
-                self.save_gsheet(path)
-        # if i store always at the manager level then is that the right thing to do?
-        return self
-
-    def save_csv(self, path) -> Self:
-        """Save as CSV file."""
-        if not path:
-            return self
-        # Placeholder - would write CSV
-        return self
-
-    def save_excel(self, path) -> None:
-        """Save as Excel file."""
-        porter = PyfficePortExcel({"parent": self})
-        porter.file_export(self, path)
-
-    def save_gsheet(self, path) -> Self:
-        """Save to Google Sheets."""
-        if not path:
-            return self
-        # Placeholder - would use gspread
-        return self
-
-    def save_document(self, file_path=None) -> Self:
-        """Save the current spreadsheet to a file"""
-        if file_path is None:
-            file_path = self.file_path
-
-        if file_path is None:
-            logma.warning("No file path specified for saving")
-            return self
-
-        # Determine file format from extension
-        file_ext = file_path.split(".")[-1].lower()
-
-        if file_ext in ["xlsx", "xls"]:
-            self.save_as_excel(file_path)
-        elif file_ext == "ods":
-            self.save_as_ods(file_path)
-        elif file_ext == "csv":
-            self.save_as_csv(file_path)
-        elif file_ext == "tsv":
-            self.save_as_tsv(file_path)
-        else:
-            logma.warning(f"Unsupported file format: {file_ext}")
-
-        return self
-
-    def save_as_excel(self, file_path) -> Self:
-        """Save as Excel file (.xlsx)"""
-        try:
-            if self.document:
-                # Update document data from table
-                self.document.data = self.extract_table_data()
-                # Save using PyfficeMatrix
-                self.document.file_path = file_path
-                self.document.save_file()
-            else:
-                # Fallback: save using basic method
-                import openpyxl
-
-                wb = openpyxl.Workbook()
-                ws = wb.active
-                data = self.extract_table_data()
-                for row_idx, row_data in enumerate(data, start=1):
-                    for col_idx, cell_value in enumerate(row_data, start=1):
-                        ws.cell(row=row_idx, column=col_idx, value=cell_value)
-                wb.save(file_path)
-            logma.info(f"Saved Excel file: {file_path}")
-        except (OSError, AttributeError) as e:
-            logma.error(f"Error saving Excel file: {e}")
-        return self
-
-    def save_as_ods(self, file_path) -> Self:
-        """Save as OpenDocument Spreadsheet (.ods)"""
-        try:
-            if self.document:
-                # Update document data from table
-                self.document.data = self.extract_table_data()
-                # Save using PyfficeMatrix
-                self.document.file_path = file_path
-                self.document.save_as_ods()
-            else:
-                logma.warning("ODS export requires PyfficeMatrix document")
-        except (AttributeError, OSError) as e:
-            logma.error(f"Error saving ODS file: {e}")
-        return self
-
-    def save_as_csv(self, file_path, delimiter=",") -> Self:
-        """Save as CSV file"""
-        try:
-            import csv
-
-            data = self.extract_table_data()
-            with open(file_path, "w", newline="", encoding="utf-8") as f:
-                writer = csv.writer(f, delimiter=delimiter)
-                writer.writerows(data)
-            logma.info(f"Saved CSV file: {file_path}")
-        except (OSError, ValueError) as e:
-            logma.error(f"Error saving CSV file: {e}")
-        return self
-
-    def save_as_tsv(self, file_path) -> Any:
-        """Save as TSV (Tab-Separated Values) file"""
-        return self.save_as_csv(file_path, delimiter="\t")
-
-    def save_file(self) -> None:
-        """Save spreadsheet to file"""
-        file_path, _ = pyqt.QFileDialog.getSaveFileName(
-            self, "Save Spreadsheet", "", "CSV Files (*.csv);;Excel Files (*.xlsx);;All Files (*)"
-        )
-
-        if file_path:
-            self.save_to_file(file_path)
-
-    def set_charts(self, charts) -> Self:
-        """Set chart objects."""
-        self.charts = charts
-        return self
-
-    def set_formula_library(self, library=None) -> Self:
-        """Set the formula library.
-
-        Args:
-            library: Parameter.
-
-        Returns:
-            Self for chaining.
-        """
-        self.formulas_library = PyfficeFormulasLibrary(library)
-        return self
-
-    def set_objects(self, objects) -> Self:
-        """Set objects."""
-        self.objects = objects
-        return self
-
-    def set_porter(self, porter) -> Self:
-        """Set the porter.
-
-        Args:
-            porter: Parameter.
-
-        Returns:
-            Self for chaining.
-        """
-        cfg = {}
-        porter = PyfficePortExcel(cfg)
-        if porter != self.porter:
-            self.add_change("porter", self.porter, porter)
-            self.porter = porter
-        return self
-
-    def set_sheets(self, sheets) -> Self:
-        """Set the sheets.
-
-        Args:
-            sheets: Parameter.
-
-        Returns:
-            Self for chaining.
-        """
-        for sheet in sheets.get("sheets", []):
-            self.sheets[sheet["name"]] = PyfficeSpreadSheet(sheet)
-        return self
-
-    def save_as(self, name, path) -> Self:
-        """Save the document.
-
-        Args:
-            name: Parameter.
-            path: Parameter.
-
-        Returns:
-            Self for chaining.
-        """
-        super().save_as(path)
-        return self
-
-    def save_copy_as(self, name, path=None) -> Self:
-        """Save the document.
-
-        Args:
-            name: Parameter.
-            path: Parameter.
-
-        Returns:
-            Self for chaining.
-        """
-        super().save_copy_as(name, path)
-        return self
-
-    def set_compatibility(self, compatibility) -> Self:
-        """Set the compatibility.
-
-        Args:
-            compatibility: Parameter.
-
-        Returns:
-            Self for chaining.
-        """
-        self.compatibility = compatibility
-        return self
-
-    def to_dict(self) -> Any:
-        """Convert this document to dict.
-
-        Returns:
-            Self for chaining.
-        """
-        doc = super().to_dict()
-        if isinstance(self.data, DataFrame):
-            doc["data"]["table"] = self.data.values.tolist()
-        else:
-            doc["data"]["table"] = self.data
-        doc["data"]["compatibility"] = self.compatibility
-        doc["data"]["documents"] = {x: y.to_dict() for x, y in self.documents.items()}
-        doc["data"]["document_type"] = "matrix"
-        # The line below used to attempt a redundant DataFrame→list
-        # conversion on `data["content"]["data"]`, but ``_canonicalize``
-        # (called via ``super().to_dict()`` above) already mirrors
-        # ``data["table"]`` into ``data["content"]`` — so the access
-        # ``data["content"]["data"]`` raises TypeError on every call
-        # (silently logged). The line-793 conversion above is the
-        # single source of truth for table→list-of-lists.
-        return self._canonicalize(doc)
-
-    def to_json_schema(self) -> dict:
-        """Convert the matrix (workbook) to JSON Schema format.
-
-        Returns:
-            dict: JSON Schema representation of the matrix.
-        """
-        schema = super().to_json_schema()
-        schema["title"] = self.name or "PyfficeMatrix"
-        schema["properties"].update(
-            {
-                "sheets": {
-                    "type": "object",
-                    "description": "Dictionary of sheet names to PyfficeSpreadSheet objects",
-                },
-                "active_worksheet": {
-                    "type": "string",
-                    "description": "Name of active worksheet",
-                },
-                "compatibility": {"type": "string", "default": self.compatibility},
-                "charts": {
-                    "type": "array",
-                    "description": "List of charts in the workbook",
-                },
-                "objects": {
-                    "type": "array",
-                    "description": "List of objects (shapes, tables, images)",
-                },
-            }
-        )
-        return schema
-
-    @classmethod
-    def from_list(cls, data: list[list[Any]]) -> PyfficeMatrix:
-        """Create matrix from 2D list."""
-        if not data:
-            return cls()
-        rows = len(data)
-        cols = len(data[0]) if data[0] else 0
-        matrix = cls(rows=rows, cols=cols)
-        matrix._data = [[float(cell) if cell is not None else 0.0 for cell in row] for row in data]
-        return matrix
-
-    @classmethod
-    def identity(cls, size: int) -> PyfficeMatrix:
-        """Create identity matrix."""
-        matrix = cls(rows=size, cols=size)
-        for i in range(size):
-            matrix._data[i][i] = 1.0
-        return matrix
-
-    def get(self, row: int, col: int) -> float:
-        """Get cell value."""
-        return self._data[row][col]
-
-    def set(self, row: int, col: int, value: float) -> None:
-        """Set cell value."""
-        self._data[row][col] = value
-
-    def add(self, other: "PyfficeMatrix") -> PyfficeMatrix:
-        """Add two matrices."""
-        if self.rows != other.rows or self.cols != other.cols:
-            raise ValueError("Matrix dimensions must match")
-        result = PyfficeMatrix(rows=self.rows, cols=self.cols)
-        for i in range(self.rows):
-            for j in range(self.cols):
-                result._data[i][j] = self._data[i][j] + other._data[i][j]
-        return result
-
-    def multiply(self, other: "PyfficeMatrix") -> PyfficeMatrix:
-        """Multiply two matrices."""
-        if self.cols != other.rows:
-            raise ValueError("Matrix dimensions incompatible for multiplication")
-        result = PyfficeMatrix(rows=self.rows, cols=other.cols)
-        for i in range(self.rows):
-            for j in range(other.cols):
-                total = 0.0
-                for k in range(self.cols):
-                    total += self._data[i][k] * other._data[k][j]
-                result._data[i][j] = total
-        return result
-
-    def transpose(self) -> PyfficeMatrix:
-        """Return transpose of matrix."""
-        result = PyfficeMatrix(rows=self.cols, cols=self.rows)
-        for i in range(self.rows):
-            for j in range(self.cols):
-                result._data[j][i] = self._data[i][j]
-        return result
-
-    def to_list(self) -> list[list[float]]:
-        """Return matrix as 2D list."""
-        return [row[:] for row in self._data]
 
 
 # ====================================================================================================================||

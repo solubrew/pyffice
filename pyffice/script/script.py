@@ -300,14 +300,18 @@ class PyfficeScript(PyfficeDocument):
 
         if file_ is None:
             file_ = self.file_path
+        if file_ is None:
+            return self
         self.set_syntax("file")
         if exists(file_):
             self.set_file_path(file_)
+            self.set_location("external")
         if self.file_formats is None:
             self.set_file_format_options()
-        for file_format in self.file_formats:
+        file_formats = self.file_formats or self.config.get("file_formats", [])
+        for file_format in file_formats:
             if file_.endswith(file_format):
-                self.syntax = self.file_formats[file_format]
+                self.syntax = file_formats[file_format]
                 if file_format in (".docx", ".docm", ".dotx"):
                     self.set_compatibility("word")
                     self.open_file_doc()
@@ -523,9 +527,10 @@ class PyfficeScript(PyfficeDocument):
             elif isinstance(self.content, dict):
                 text = self.content.get("content", {}).get("text", None)
                 logma.info(f"Text {text}")
+                if text is None:
+                    text = self.content.get("text", None)
             else:
                 raise Exception(f"Text {text} not proper content dictionary")
-
         cfg = {"unit": {"value": text}}
         text = PyfficeText(cfg)
         text.load_unit()

@@ -57,14 +57,8 @@ class PyfficeConfig(PyfficeDocument):
             document = self.config.dikt.get("document", {})
             if document is None:
                 document = {}
-        super().load_document(document)
-        return self
-
-    def load_document(self, document=None) -> Self:
         logma.debug(f"{self.__class__.__name__}.load_document called")
         super().load_document(document)
-        if not isinstance(document, dict):
-            return self
         data = document.get("data", {}) or {}
         content = data.get("content", {}) or {}
         if isinstance(content, dict):

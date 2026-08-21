@@ -41,6 +41,7 @@ if not log:
 # ====================================================================================================================||
 pxcfg = join(here, "_data_", "web.yaml")
 HOMEPAGE = {"url": "https://www.pyffice.com/"}
+HOMEURL = HOMEPAGE.get("url")
 
 
 class PyfficeWebBrowser(PyfficeDocumentManager):
@@ -104,7 +105,13 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
         Returns:
             Self for chaining.
         """
+        if self.active_page is None:
+            return self.get_home_url()
         return self.active_page.get_url()
+
+    def get_home_url(self):
+        """"""
+        return "https://www.google.com/"
 
     def is_pinned(self) -> Any:
         """Return whether this document is pinned.
@@ -317,6 +324,7 @@ class PyfficeWebPage(PyfficeDocument):
         super().__init__(cfg)
         self.config.override(kahndor.Instruct(pxcfg).select("PyfficeWebPage")).override(cfg)
         self.active_url = None
+        self.home_url = None
         self.active_profile = None
         self.history = None
         self.snapshots = None
@@ -387,6 +395,7 @@ class PyfficeWebPage(PyfficeDocument):
         super().load_document(document)
         self.set_history(document.get("history", None), document.get("max_items", 10))
         self.set_url(document.get("url", None))
+        self.set_home_url(document.get("home_url", None))
         self.set_snapshots(document.get("snapshots", []))
         self.set_versions(document.get("versions", []))
         self.set_page_pinned(document.get("pinned", None))
@@ -406,7 +415,14 @@ class PyfficeWebPage(PyfficeDocument):
 
     def get_url(self) -> Any:
         """"""
-        return self.active_url.get_url()
+        url = self.active_url.get_url()
+        if url is None:
+            url = self.get_home_url()
+        return url
+
+    def get_home_url(self):
+        """"""
+        return self.home_url
 
     def get_url_document(self):
         """"""
@@ -510,6 +526,13 @@ class PyfficeWebPage(PyfficeDocument):
             self.snapshots = snapshots
         return self
 
+    def set_home_url(self, url):
+        """"""
+        if url is None:
+            url = self._configure_home_url()
+        self.home_url = url
+        return self
+
     def set_url(self, url) -> Self:
         """Set the url.
 
@@ -561,6 +584,11 @@ class PyfficeWebPage(PyfficeDocument):
         # doc["data"]["profile"] = self.active_profile.to_dict()
         doc["data"]["source"] = None
         return self._canonicalize(doc)
+
+    def _configure_home_url(self):
+        """"""
+        home_url = self.config.get("home_url", HOMEURL) or HOMEURL
+        return home_url
 
 
 class PyfficeWebProfile(PyfficeContact):
