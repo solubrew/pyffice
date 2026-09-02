@@ -38,7 +38,7 @@ from pycurity.pyhash import decode64
 
 # ====================================================================================================================||
 here = join(dirname(__file__), "")  # ||
-log = True
+log = False
 debug = True
 logma = Logma(__name__)
 if not log:

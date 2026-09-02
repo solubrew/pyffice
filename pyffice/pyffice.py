@@ -44,6 +44,7 @@ from pyffice.web.url import PyfficeURL, PyfficeURLLibrary
 from pyffice.web.web import PyfficeWebBrowser
 from pyffice.filesystems.filesystems import PyfficeFileSystem
 from pyffice.config.config import PyfficeConfig
+from pyffice.document import PyfficeDocument
 from pyffice.updates.updates import PyfficeUpdater
 from pyffice.web.web import PyfficeWebPage
 
@@ -242,22 +243,6 @@ class PyfficeCodex(PyfficeDocumentManager):
         self.documents[config.did] = config
         return config
 
-    def init_web_config(self, cfg: Optional[dict[str, Any]] = None) -> Optional[Any]:
-        """Initialize a note document."""
-        cfg = cfg or {}
-        cfg["codex"] = self
-        config = PyfficeWebConfig(cfg)
-        self.documents[config.did] = config
-        return config
-
-    def init_web_page(self, cfg: Optional[dict[str, Any]] = None) -> Optional[Any]:
-        """"""
-        cfg = cfg or {}
-        cfg["codex"] = self
-        page = PyfficeWebPage(cfg)
-        self.documents[page.did] = page
-        return page
-
     def init_contacts(self, cfg: Optional[dict[str, Any]] = None) -> Optional[Any]:
         """Initialize a contacts/rolodex document."""
         cfg = cfg or {}
@@ -276,6 +261,14 @@ class PyfficeCodex(PyfficeDocumentManager):
             self.init_contacts(cfg)
         self.contacts.add_contact(contact)
         return contact
+
+    def init_document(self, cfg: Optional[dict[str, Any]] = None) -> Optional[Any]:
+        """Initialize a note document."""
+        cfg = cfg or {}
+        cfg["codex"] = self
+        doc = PyfficeDocument(cfg)
+        self.documents[doc.did] = doc
+        return doc
 
     def init_files(self, cfg: Optional[dict[str, Any]] = None) -> Optional[Any]:
         """Initialize a filesystem document."""
@@ -404,6 +397,22 @@ class PyfficeCodex(PyfficeDocumentManager):
         url = PyfficeURL(cfg)
         self.documents[url.did] = url
         return self.source
+
+    def init_web_config(self, cfg: Optional[dict[str, Any]] = None) -> Optional[Any]:
+        """Initialize a note document."""
+        cfg = cfg or {}
+        cfg["codex"] = self
+        config = PyfficeWebConfig(cfg)
+        self.documents[config.did] = config
+        return config
+
+    def init_web_page(self, cfg: Optional[dict[str, Any]] = None) -> Optional[Any]:
+        """"""
+        cfg = cfg or {}
+        cfg["codex"] = self
+        page = PyfficeWebPage(cfg)
+        self.documents[page.did] = page
+        return page
 
     def load_document(self, document: Optional[dict[str, Any]] = None) -> dict[str, Any]:
         """Load documents into the codex."""
