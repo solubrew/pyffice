@@ -1,17 +1,804 @@
-agent: hermes
+agent: m3rl1n
 analysis:
   counts:
-    files: 459
-    python_files: 245
-    python_lines: 39299
-    test_files: 86
-audit_date: '1785470638.3677874'
+    by_file:
+    - is_test: true
+      lines: 17
+      path: tests/test_cherrytree_port_refactor.py
+    - is_test: false
+      lines: 4
+      path: tests/__init__.py
+    - is_test: false
+      lines: 289
+      path: pyffice/io_helpers.py
+    - is_test: false
+      lines: 1416
+      path: pyffice/cli.py
+    - is_test: false
+      lines: 587
+      path: pyffice/pyffice.py
+    - is_test: false
+      lines: 1565
+      path: pyffice/document.py
+    - is_test: false
+      lines: 89
+      path: pyffice/__main__.py
+    - is_test: false
+      lines: 68
+      path: pyffice/__init__.py
+    - is_test: true
+      lines: 69
+      path: tests/unit/test_pyffice.py
+    - is_test: false
+      lines: 18
+      path: tests/unit/__init__.py
+    - is_test: true
+      lines: 58
+      path: tests/unit/test_document.py
+    - is_test: true
+      lines: 18
+      path: tests/integration/test_integration.py
+    - is_test: true
+      lines: 50
+      path: tests/pyffice_unit/conftest.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/__init__.py
+    - is_test: true
+      lines: 261
+      path: tests/pyffice_unit/unit/documentTEST.py
+    - is_test: true
+      lines: 181
+      path: tests/pyffice_unit/unit/pyfficeTEST.py
+    - is_test: true
+      lines: 110
+      path: tests/pyffice_unit/unit/cliTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/__init__.py
+    - is_test: true
+      lines: 59
+      path: tests/pyffice_unit/tests/test_pptx.py
+    - is_test: true
+      lines: 91
+      path: tests/pyffice_unit/tests/test_obj.py
+    - is_test: true
+      lines: 106
+      path: tests/pyffice_unit/tests/test_tar.py
+    - is_test: true
+      lines: 63
+      path: tests/pyffice_unit/tests/test_azw.py
+    - is_test: true
+      lines: 9
+      path: tests/pyffice_unit/tests/test_gltf.py
+    - is_test: true
+      lines: 63
+      path: tests/pyffice_unit/tests/test_mobi.py
+    - is_test: true
+      lines: 104
+      path: tests/pyffice_unit/tests/test_dxf.py
+    - is_test: true
+      lines: 9
+      path: tests/pyffice_unit/tests/test_iges.py
+    - is_test: true
+      lines: 6
+      path: tests/pyffice_unit/tests/test_fbx.py
+    - is_test: true
+      lines: 7
+      path: tests/pyffice_unit/tests/test_dwg.py
+    - is_test: true
+      lines: 118
+      path: tests/pyffice_unit/tests/test_zip.py
+    - is_test: true
+      lines: 63
+      path: tests/pyffice_unit/tests/test_blend.py
+    - is_test: true
+      lines: 9
+      path: tests/pyffice_unit/tests/test_scad.py
+    - is_test: true
+      lines: 9
+      path: tests/pyffice_unit/tests/test_stl.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/tests/__init__.py
+    - is_test: true
+      lines: 77
+      path: tests/pyffice_unit/tests/test_epub.py
+    - is_test: true
+      lines: 86
+      path: tests/pyffice_unit/tests/test_rar.py
+    - is_test: true
+      lines: 77
+      path: tests/pyffice_unit/tests/test_sevenzip.py
+    - is_test: true
+      lines: 11
+      path: tests/pyffice_unit/tests/test_step.py
+    - is_test: true
+      lines: 189
+      path: tests/pyffice_unit/unit/filesystems/filesystemsTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/filesystems/__init__.py
+    - is_test: true
+      lines: 206
+      path: tests/pyffice_unit/unit/diagrams/diagramsTEST.py
+    - is_test: true
+      lines: 92
+      path: tests/pyffice_unit/unit/diagrams/formats_protocolTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/diagrams/__init__.py
+    - is_test: true
+      lines: 118
+      path: tests/pyffice_unit/unit/notebooks/notebooksTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/notebooks/__init__.py
+    - is_test: true
+      lines: 132
+      path: tests/pyffice_unit/unit/databases/databasesTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/databases/__init__.py
+    - is_test: true
+      lines: 188
+      path: tests/pyffice_unit/unit/items/itemsTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/items/__init__.py
+    - is_test: true
+      lines: 128
+      path: tests/pyffice_unit/unit/tags/tagsTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/tags/__init__.py
+    - is_test: true
+      lines: 146
+      path: tests/pyffice_unit/unit/charts/loadFromXlsxTEST.py
+    - is_test: true
+      lines: 85
+      path: tests/pyffice_unit/unit/charts/chartsTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/charts/__init__.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/socials/__init__.py
+    - is_test: true
+      lines: 33
+      path: tests/pyffice_unit/unit/socials/socialsTEST.py
+    - is_test: true
+      lines: 34
+      path: tests/pyffice_unit/unit/email/emailTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/email/__init__.py
+    - is_test: true
+      lines: 132
+      path: tests/pyffice_unit/unit/ebook/ebookTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/cad/__init__.py
+    - is_test: true
+      lines: 153
+      path: tests/pyffice_unit/unit/cad/stl_implTEST.py
+    - is_test: true
+      lines: 138
+      path: tests/pyffice_unit/unit/cad/iges_implTEST.py
+    - is_test: true
+      lines: 231
+      path: tests/pyffice_unit/unit/projects/projectsTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/calendars/__init__.py
+    - is_test: true
+      lines: 102
+      path: tests/pyffice_unit/unit/calendars/calendarsTEST.py
+    - is_test: true
+      lines: 23
+      path: tests/pyffice_unit/unit/presentation/presentationTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/presentation/__init__.py
+    - is_test: true
+      lines: 19
+      path: tests/pyffice_unit/unit/reports/reportsTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/reports/__init__.py
+    - is_test: true
+      lines: 135
+      path: tests/pyffice_unit/unit/updates/updatesTEST.py
+    - is_test: true
+      lines: 112
+      path: tests/pyffice_unit/unit/script/scriptTEST.py
+    - is_test: true
+      lines: 206
+      path: tests/pyffice_unit/unit/analytics/analyticsTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/analytics/__init__.py
+    - is_test: true
+      lines: 19
+      path: tests/pyffice_unit/unit/video/videoTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/video/__init__.py
+    - is_test: true
+      lines: 180
+      path: tests/pyffice_unit/unit/ports/json_handlerTEST.py
+    - is_test: true
+      lines: 229
+      path: tests/pyffice_unit/unit/ports/gportsTEST.py
+    - is_test: true
+      lines: 65
+      path: tests/pyffice_unit/unit/ports/cloud_ports_protocolTEST.py
+    - is_test: true
+      lines: 142
+      path: tests/pyffice_unit/unit/ports/portsTEST.py
+    - is_test: true
+      lines: 241
+      path: tests/pyffice_unit/unit/ports/csv_handlerTEST.py
+    - is_test: true
+      lines: 312
+      path: tests/pyffice_unit/unit/ports/cloud_portsTEST.py
+    - is_test: true
+      lines: 145
+      path: tests/pyffice_unit/unit/contacts/contactsTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/contacts/__init__.py
+    - is_test: true
+      lines: 114
+      path: tests/pyffice_unit/unit/audio/audioTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/audio/__init__.py
+    - is_test: true
+      lines: 67
+      path: tests/pyffice_unit/unit/images/utilities_importTEST.py
+    - is_test: true
+      lines: 156
+      path: tests/pyffice_unit/unit/images/imagesTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/images/__init__.py
+    - is_test: true
+      lines: 140
+      path: tests/pyffice_unit/unit/text/text_messages_implTEST.py
+    - is_test: true
+      lines: 81
+      path: tests/pyffice_unit/unit/text/textdoc_implTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/text/__init__.py
+    - is_test: true
+      lines: 162
+      path: tests/pyffice_unit/unit/text/textTEST.py
+    - is_test: true
+      lines: 189
+      path: tests/pyffice_unit/unit/workflows/workflowsTEST.py
+    - is_test: true
+      lines: 97
+      path: tests/pyffice_unit/unit/workflows/alarms_importTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/workflows/__init__.py
+    - is_test: true
+      lines: 256
+      path: tests/pyffice_unit/unit/container/containerTEST.py
+    - is_test: true
+      lines: 232
+      path: tests/pyffice_unit/unit/forms/formsTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/forms/__init__.py
+    - is_test: true
+      lines: 51
+      path: tests/pyffice_unit/unit/config/configTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/config/__init__.py
+    - is_test: true
+      lines: 277
+      path: tests/pyffice_unit/unit/web/webTEST.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/web/__init__.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/cam/__init__.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/unit/spreadsheet/__init__.py
+    - is_test: true
+      lines: 221
+      path: tests/pyffice_unit/unit/matrix/matrixTEST.py
+    - is_test: true
+      lines: 224
+      path: tests/pyffice_unit/unit/matrix/chartExtractionTEST.py
+    - is_test: true
+      lines: 205
+      path: tests/pyffice_unit/unit/media/mediaTEST.py
+    - is_test: true
+      lines: 14
+      path: tests/pyffice_unit/tests/tests/test_pptx.py
+    - is_test: true
+      lines: 14
+      path: tests/pyffice_unit/tests/tests/test_audio.py
+    - is_test: true
+      lines: 10
+      path: tests/pyffice_unit/tests/tests/test_obj.py
+    - is_test: true
+      lines: 14
+      path: tests/pyffice_unit/tests/tests/test_tar.py
+    - is_test: true
+      lines: 10
+      path: tests/pyffice_unit/tests/tests/test_azw.py
+    - is_test: true
+      lines: 10
+      path: tests/pyffice_unit/tests/tests/test_mobi.py
+    - is_test: true
+      lines: 10
+      path: tests/pyffice_unit/tests/tests/test_env.py
+    - is_test: true
+      lines: 10
+      path: tests/pyffice_unit/tests/tests/test_xml.py
+    - is_test: true
+      lines: 14
+      path: tests/pyffice_unit/tests/tests/test_zip.py
+    - is_test: true
+      lines: 9
+      path: tests/pyffice_unit/tests/tests/test_config.py
+    - is_test: true
+      lines: 14
+      path: tests/pyffice_unit/tests/tests/test_video.py
+    - is_test: true
+      lines: 36
+      path: tests/pyffice_unit/tests/tests/test_presentation.py
+    - is_test: true
+      lines: 10
+      path: tests/pyffice_unit/tests/tests/test_toml.py
+    - is_test: false
+      lines: 0
+      path: tests/pyffice_unit/tests/tests/__init__.py
+    - is_test: true
+      lines: 10
+      path: tests/pyffice_unit/tests/tests/test_ini.py
+    - is_test: true
+      lines: 47
+      path: tests/pyffice_unit/tests/tests/test_cad.py
+    - is_test: true
+      lines: 14
+      path: tests/pyffice_unit/tests/tests/test_epub.py
+    - is_test: true
+      lines: 10
+      path: tests/pyffice_unit/tests/tests/test_rar.py
+    - is_test: true
+      lines: 10
+      path: tests/pyffice_unit/tests/tests/test_sevenzip.py
+    - is_test: true
+      lines: 10
+      path: tests/pyffice_unit/tests/tests/test_yaml.py
+    - is_test: false
+      lines: 284
+      path: pyffice/filesystems/filesystems.py
+    - is_test: false
+      lines: 29
+      path: pyffice/filesystems/__init__.py
+    - is_test: false
+      lines: 800
+      path: pyffice/diagrams/diagrams.py
+    - is_test: false
+      lines: 903
+      path: pyffice/diagrams/formats.py
+    - is_test: false
+      lines: 81
+      path: pyffice/diagrams/__init__.py
+    - is_test: false
+      lines: 175
+      path: pyffice/notebooks/notebooks.py
+    - is_test: false
+      lines: 29
+      path: pyffice/notebooks/__init__.py
+    - is_test: false
+      lines: 268
+      path: pyffice/databases/databases.py
+    - is_test: false
+      lines: 36
+      path: pyffice/databases/__init__.py
+    - is_test: false
+      lines: 48
+      path: pyffice/items/layers.py
+    - is_test: false
+      lines: 401
+      path: pyffice/items/text.py
+    - is_test: false
+      lines: 619
+      path: pyffice/items/colors.py
+    - is_test: false
+      lines: 252
+      path: pyffice/items/shapes.py
+    - is_test: false
+      lines: 94
+      path: pyffice/items/items.py
+    - is_test: false
+      lines: 371
+      path: pyffice/items/cells.py
+    - is_test: false
+      lines: 76
+      path: pyffice/items/__init__.py
+    - is_test: false
+      lines: 82
+      path: pyffice/tags/manager.py
+    - is_test: false
+      lines: 232
+      path: pyffice/tags/references.py
+    - is_test: false
+      lines: 105
+      path: pyffice/tags/tags.py
+    - is_test: false
+      lines: 35
+      path: pyffice/tags/__init__.py
+    - is_test: false
+      lines: 64
+      path: pyffice/tags/ratings.py
+    - is_test: false
+      lines: 119
+      path: pyffice/charts/sankey.py
+    - is_test: false
+      lines: 656
+      path: pyffice/charts/charts.py
+    - is_test: false
+      lines: 31
+      path: pyffice/charts/__init__.py
+    - is_test: false
+      lines: 37
+      path: pyffice/socials/socials.py
+    - is_test: false
+      lines: 246
+      path: pyffice/socials/messages.py
+    - is_test: false
+      lines: 33
+      path: pyffice/socials/__init__.py
+    - is_test: false
+      lines: 437
+      path: pyffice/email/email.py
+    - is_test: false
+      lines: 31
+      path: pyffice/email/__init__.py
+    - is_test: false
+      lines: 73
+      path: pyffice/ebook/azw.py
+    - is_test: false
+      lines: 71
+      path: pyffice/ebook/mobi.py
+    - is_test: false
+      lines: 145
+      path: pyffice/ebook/epub.py
+    - is_test: false
+      lines: 49
+      path: pyffice/ebook/__init__.py
+    - is_test: false
+      lines: 278
+      path: pyffice/cad/iges.py
+    - is_test: false
+      lines: 323
+      path: pyffice/cad/stl.py
+    - is_test: false
+      lines: 114
+      path: pyffice/cad/dwg.py
+    - is_test: false
+      lines: 342
+      path: pyffice/cad/cad.py
+    - is_test: false
+      lines: 333
+      path: pyffice/cad/bom.py
+    - is_test: false
+      lines: 175
+      path: pyffice/cad/obj.py
+    - is_test: false
+      lines: 294
+      path: pyffice/cad/gcode.py
+    - is_test: false
+      lines: 114
+      path: pyffice/cad/fbx.py
+    - is_test: false
+      lines: 115
+      path: pyffice/cad/blend.py
+    - is_test: false
+      lines: 109
+      path: pyffice/cad/gis.py
+    - is_test: false
+      lines: 108
+      path: pyffice/cad/step.py
+    - is_test: false
+      lines: 114
+      path: pyffice/cad/dxf.py
+    - is_test: false
+      lines: 136
+      path: pyffice/cad/__init__.py
+    - is_test: false
+      lines: 103
+      path: pyffice/cad/scad.py
+    - is_test: false
+      lines: 114
+      path: pyffice/cad/gltf.py
+    - is_test: false
+      lines: 304
+      path: pyffice/cad/cam.py
+    - is_test: false
+      lines: 412
+      path: pyffice/projects/projects.py
+    - is_test: false
+      lines: 412
+      path: pyffice/projects/paxn.py
+    - is_test: false
+      lines: 54
+      path: pyffice/projects/__init__.py
+    - is_test: false
+      lines: 206
+      path: pyffice/calendars/calendars.py
+    - is_test: false
+      lines: 389
+      path: pyffice/calendars/events.py
+    - is_test: false
+      lines: 33
+      path: pyffice/calendars/__init__.py
+    - is_test: false
+      lines: 175
+      path: pyffice/presentation/presentation.py
+    - is_test: false
+      lines: 37
+      path: pyffice/presentation/__init__.py
+    - is_test: false
+      lines: 78
+      path: pyffice/reports/reports.py
+    - is_test: false
+      lines: 29
+      path: pyffice/reports/__init__.py
+    - is_test: false
+      lines: 368
+      path: pyffice/updates/updates.py
+    - is_test: false
+      lines: 35
+      path: pyffice/updates/__init__.py
+    - is_test: false
+      lines: 590
+      path: pyffice/script/script.py
+    - is_test: false
+      lines: 31
+      path: pyffice/script/__init__.py
+    - is_test: false
+      lines: 763
+      path: pyffice/analytics/sources.py
+    - is_test: false
+      lines: 35
+      path: pyffice/analytics/__init__.py
+    - is_test: false
+      lines: 170
+      path: pyffice/video/video_export.py
+    - is_test: false
+      lines: 29
+      path: pyffice/video/__init__.py
+    - is_test: false
+      lines: 425
+      path: pyffice/ports/noteports.py
+    - is_test: false
+      lines: 538
+      path: pyffice/ports/gports.py
+    - is_test: false
+      lines: 39
+      path: pyffice/ports/fileports.py
+    - is_test: false
+      lines: 39
+      path: pyffice/ports/cad_ports.py
+    - is_test: false
+      lines: 257
+      path: pyffice/ports/csv_handler.py
+    - is_test: false
+      lines: 507
+      path: pyffice/ports/ports.py
+    - is_test: false
+      lines: 221
+      path: pyffice/ports/json_handler.py
+    - is_test: false
+      lines: 187
+      path: pyffice/ports/imageports.py
+    - is_test: false
+      lines: 621
+      path: pyffice/ports/cloud_ports.py
+    - is_test: false
+      lines: 531
+      path: pyffice/ports/msports.py
+    - is_test: false
+      lines: 96
+      path: pyffice/ports/__init__.py
+    - is_test: false
+      lines: 78
+      path: pyffice/contacts/persona.py
+    - is_test: false
+      lines: 35
+      path: pyffice/contacts/__init__.py
+    - is_test: false
+      lines: 732
+      path: pyffice/contacts/contacts.py
+    - is_test: false
+      lines: 288
+      path: pyffice/audio/audio_export.py
+    - is_test: false
+      lines: 31
+      path: pyffice/audio/__init__.py
+    - is_test: false
+      lines: 524
+      path: pyffice/images/images.py
+    - is_test: false
+      lines: 128
+      path: pyffice/images/sketches.py
+    - is_test: false
+      lines: 427
+      path: pyffice/images/palettes.py
+    - is_test: false
+      lines: 343
+      path: pyffice/images/pdfs.py
+    - is_test: false
+      lines: 59
+      path: pyffice/images/__init__.py
+    - is_test: false
+      lines: 225
+      path: pyffice/images/utilities.py
+    - is_test: false
+      lines: 193
+      path: pyffice/text/text_messages.py
+    - is_test: false
+      lines: 143
+      path: pyffice/text/bibliographies.py
+    - is_test: false
+      lines: 223
+      path: pyffice/text/textdoc.py
+    - is_test: false
+      lines: 33
+      path: pyffice/text/__init__.py
+    - is_test: false
+      lines: 403
+      path: pyffice/workflows/formulas.py
+    - is_test: false
+      lines: 88
+      path: pyffice/workflows/workflows.py
+    - is_test: false
+      lines: 156
+      path: pyffice/workflows/alarms.py
+    - is_test: false
+      lines: 41
+      path: pyffice/workflows/__init__.py
+    - is_test: false
+      lines: 146
+      path: pyffice/container/zip.py
+    - is_test: false
+      lines: 141
+      path: pyffice/container/tar.py
+    - is_test: false
+      lines: 228
+      path: pyffice/container/binary.py
+    - is_test: false
+      lines: 108
+      path: pyffice/container/rar.py
+    - is_test: false
+      lines: 45
+      path: pyffice/container/__init__.py
+    - is_test: false
+      lines: 103
+      path: pyffice/container/sevenzip.py
+    - is_test: false
+      lines: 519
+      path: pyffice/forms/forms.py
+    - is_test: false
+      lines: 33
+      path: pyffice/forms/__init__.py
+    - is_test: false
+      lines: 48
+      path: pyffice/config/policies.py
+    - is_test: false
+      lines: 268
+      path: pyffice/config/config.py
+    - is_test: false
+      lines: 35
+      path: pyffice/config/__init__.py
+    - is_test: false
+      lines: 95
+      path: pyffice/web/services.py
+    - is_test: false
+      lines: 798
+      path: pyffice/web/web.py
+    - is_test: false
+      lines: 575
+      path: pyffice/web/prompts.py
+    - is_test: false
+      lines: 574
+      path: pyffice/web/url.py
+    - is_test: false
+      lines: 49
+      path: pyffice/web/__init__.py
+    - is_test: false
+      lines: 1042
+      path: pyffice/matrix/matrix.py
+    - is_test: false
+      lines: 554
+      path: pyffice/matrix/spreadsheet.py
+    - is_test: false
+      lines: 35
+      path: pyffice/matrix/__init__.py
+    - is_test: false
+      lines: 28
+      path: pyffice/media/media_video.py
+    - is_test: false
+      lines: 28
+      path: pyffice/media/media_audio.py
+    - is_test: false
+      lines: 93
+      path: pyffice/media/heic.py
+    - is_test: false
+      lines: 32
+      path: pyffice/media/raw.py
+    - is_test: false
+      lines: 94
+      path: pyffice/media/media.py
+    - is_test: false
+      lines: 55
+      path: pyffice/media/__init__.py
+    files: 464
+    python_files: 248
+    python_lines: 39621
+    test_files: 89
+audit_date: '1786652185.8422542'
 dimensions:
+  aspirational_tests:
+    details:
+      details:
+        aspirational_count: 1
+        issues:
+        - fix: Either implement the missing class/function or remove the test. Aspirational
+            tests fail at collection time and don't add coverage.
+          items:
+          - file: tests/pyffice_unit/tests/test_pptx.py
+            line: 13
+            module: pyffice.ports
+            symbol: pptx_doc
+          rule: 1 aspirational test reference(s)
+          severity: medium
+        score: 95
+        status: pass
+      score: 95
+      status: pass
+    score: 95
+    status: pass
+  aspirational_yaml:
+    details:
+      details:
+        issues: []
+        score: 100
+        status: pass
+        yaml_todo_count: 0
+      score: 100
+      status: pass
+    score: 100
+    status: pass
   base_class_duplication:
     details:
       details:
         issues: []
         score: 100
+      score: 100
+      status: pass
+    score: 100
+    status: pass
+  broken_stubs:
+    details:
+      details:
+        broken_count: 0
+        issues: []
+        score: 100
+        status: pass
       score: 100
       status: pass
     score: 100
@@ -72,6 +859,17 @@ dimensions:
       status: pass
     score: 100
     status: pass
+  comment_to_implementation_gap:
+    details:
+      details:
+        gap_count: 0
+        issues: []
+        score: 100
+        status: pass
+      score: 100
+      status: pass
+    score: 100
+    status: pass
   configuration:
     details:
       details:
@@ -85,7 +883,7 @@ dimensions:
   data_clumps:
     details:
       details:
-        data_clump_count: 5
+        data_clump_count: 4
         issues:
         - clumps:
           - locations: 7
@@ -100,7 +898,7 @@ dimensions:
             - path
             - self
             - syntax
-          - locations: 42
+          - locations: 45
             params:
             - encrypt
             - format_
@@ -111,26 +909,21 @@ dimensions:
             - diagram
             - file_path
             - self
-          - locations: 8
-            params:
-            - cfg
-            - file_path
-            - self
           fix: Consider creating a dataclass to group these parameters
-          rule: 'Data clumps detected: 5 combinations'
+          rule: 'Data clumps detected: 4 combinations'
           severity: medium
-        score: 50
+        score: 60
         status: partial
-      score: 50
+      score: 60
       status: partial
-    score: 50
+    score: 60
     status: partial
   dependency_strategy:
     details:
       details:
-        external_imports: 617
-        info: 'Hint: 30 GitVein projects available but not used: condor, eaglis, falcon,
-          glain, goalt...'
+        external_imports: 620
+        info: 'Hint: 36 GitVein projects available but not used: apig, condor, eaglis,
+          falcon, glain...'
         internal_import_details:
         - file: tests/pyffice_unit/unit/documentTEST.py
           module: kahndor.logma
@@ -162,14 +955,14 @@ dimensions:
         - file: tests/pyffice_unit/unit/charts/chartsTEST.py
           module: kahndor.logma
           project: kahndor
-        internal_imports: 191
+        internal_imports: 192
         internal_projects_used:
-        - pyffice
         - kahndor
-        leverage_score: 23.64
+        - pyffice
+        leverage_score: 23.65
         score: 100
         status: pass
-        total_imports: 808
+        total_imports: 812
       score: 100
       status: pass
     score: 100
@@ -198,20 +991,29 @@ dimensions:
   embedded_todos:
     details:
       details:
-        count: 1
+        count: 4
         examples:
         - file: tests/pyffice_unit/unit/documentTEST.py
           line: 7
           text: '- increment_version bumps version (T-NEW-057: removed # TODO comment)'
+        - file: pyffice/updates/updates.py
+          line: 348
+          text: '# TODO implement real document types from templates in pyffice package'
+        - file: pyffice/ports/msports.py
+          line: 41
+          text: '# TODO data not being extracted properly'
+        - file: pyffice/images/images.py
+          line: 235
+          text: '# TODO implement palette extraction'
         issues:
         - dimension: embedded_todos
           rule: Inline TODOs need tracking
           severity: medium
-        score: 98
+        score: 92
         status: pass
-      score: 98
+      score: 92
       status: pass
-    score: 98
+    score: 92
     status: pass
   error_handling:
     details:
@@ -268,7 +1070,7 @@ dimensions:
           branches:
             local: []
             remote: []
-          commit_count: 382
+          commit_count: 391
           commits: []
           contributors: []
           is_repo: true
@@ -311,6 +1113,17 @@ dimensions:
   import_organization:
     details:
       details:
+        issues: []
+        score: 100
+        status: pass
+      score: 100
+      status: pass
+    score: 100
+    status: pass
+  incomplete_subclass_override:
+    details:
+      details:
+        incomplete_count: 0
         issues: []
         score: 100
         status: pass
@@ -557,6 +1370,33 @@ dimensions:
       status: pass
     score: 100
     status: pass
+  prepare_to_package:
+    details:
+      details:
+        checks:
+          has_dependencies:
+            pass: true
+          has_entry_point:
+            pass: true
+          has_license:
+            pass: true
+          has_name:
+            pass: true
+          has_python_version_floor:
+            pass: true
+          has_readme:
+            pass: true
+          has_version:
+            pass: true
+          pyproject_exists:
+            pass: true
+        issues: []
+        score: 100
+        status: pass
+      score: 100
+      status: pass
+    score: 100
+    status: pass
   private_leak:
     details:
       details:
@@ -671,6 +1511,13 @@ dimensions:
           rule: 'Bandit: Audit url open for permitted schemes. Allowing use of file:/
             or custom schemes is often unexpected.'
           severity: medium
+        - file: /home/solubrew/.hermes/projects/pyffice/pyffice/ports/noteports.py
+          line: 186
+          rule: 'Bandit: Using xml.etree.ElementTree.fromstring to parse untrusted
+            XML data is known to be vulnerable to XML attacks. Replace xml.etree.ElementTree.fromstring
+            with its defusedxml equivalent function or make sure defusedxml.defuse_stdlib()
+            is called'
+          severity: medium
         - file: /home/solubrew/.hermes/projects/pyffice/pyffice/ports/ports.py
           line: 282
           rule: 'Bandit: Using xml.etree.ElementTree.fromstring to parse untrusted
@@ -740,7 +1587,7 @@ dimensions:
         - category: getattr_dynamic
           content: data["path"] = meta.get("path") or getattr(self, "file_path", None)
           file: pyffice/document.py
-          line: 827
+          line: 833
           pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
           severity: 60
         - category: getattr_dynamic
@@ -758,13 +1605,13 @@ dimensions:
         - category: getattr_dynamic
           content: setattr(self, change["label"], change["new_value"])
           file: pyffice/document.py
-          line: 419
+          line: 394
           pattern: setattr\(
           severity: 60
         - category: getattr_dynamic
           content: setattr(self, last_change["label"], last_change["value"])
           file: pyffice/document.py
-          line: 859
+          line: 749
           pattern: setattr\(
           severity: 60
         - category: dynamic_import
@@ -943,6 +1790,97 @@ dimensions:
           line: 18
           pattern: ast_call
           severity: 80
+        - category: getattr_dynamic
+          content: openpyxl_charts = getattr(ws, "_charts", []) or []
+          file: pyffice/charts/charts.py
+          line: 335
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: title_obj = getattr(oc, "title", None)
+          file: pyffice/charts/charts.py
+          line: 358
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: 'if title_obj is not None and getattr(title_obj, "tx", None) is
+            not None:'
+          file: pyffice/charts/charts.py
+          line: 359
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: 'if getattr(tx, "rich", None) is not None and tx.rich.p:'
+          file: pyffice/charts/charts.py
+          line: 361
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: 'if title is None and getattr(tx, "strRef", None) is not None:'
+          file: pyffice/charts/charts.py
+          line: 365
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: anchor = getattr(oc, "anchor", None)
+          file: pyffice/charts/charts.py
+          line: 371
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: _from = getattr(anchor, "_from", None)
+          file: pyffice/charts/charts.py
+          line: 373
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: '"from_col": getattr(_from, "col", None),'
+          file: pyffice/charts/charts.py
+          line: 376
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: '"from_row": getattr(_from, "row", None),'
+          file: pyffice/charts/charts.py
+          line: 377
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: _to = getattr(anchor, "to", None)
+          file: pyffice/charts/charts.py
+          line: 379
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: position["to_col"] = getattr(_to, "col", None)
+          file: pyffice/charts/charts.py
+          line: 381
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: position["to_row"] = getattr(_to, "row", None)
+          file: pyffice/charts/charts.py
+          line: 382
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: series_list = getattr(oc, "series", []) or []
+          file: pyffice/charts/charts.py
+          line: 388
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: if getattr(s0, "tx", None) is not None and getattr(
+          file: pyffice/charts/charts.py
+          line: 392
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: if getattr(s0, "tx", None) is not None and getattr(
+          file: pyffice/charts/charts.py
+          line: 392
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
         - category: dynamic_import
           content: mod = __import__(mod_path, fromlist=[attr])
           file: pyffice/charts/__init__.py
@@ -2091,33 +3029,33 @@ dimensions:
           pattern: ast_call
           severity: 80
         - category: getattr_dynamic
-          content: self.tags = getattr(self, 'tags', {})
+          content: self.tags = getattr(self, "tags", {})
           file: pyffice/images/images.py
-          line: 141
+          line: 140
           pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
           severity: 60
         - category: getattr_dynamic
-          content: filters = getattr(self, 'filters', [])
+          content: filters = getattr(self, "filters", [])
           file: pyffice/images/images.py
-          line: 186
+          line: 187
           pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
           severity: 60
         - category: getattr_dynamic
-          content: layers = getattr(self, 'layers', [])
+          content: layers = getattr(self, "layers", [])
           file: pyffice/images/images.py
-          line: 198
+          line: 199
           pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
           severity: 60
         - category: getattr_dynamic
-          content: shapes = getattr(self, 'shapes', [])
+          content: shapes = getattr(self, "shapes", [])
           file: pyffice/images/images.py
-          line: 205
+          line: 206
           pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
           severity: 60
         - category: getattr_dynamic
-          content: texts = getattr(self, 'texts', [])
+          content: texts = getattr(self, "texts", [])
           file: pyffice/images/images.py
-          line: 227
+          line: 228
           pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
           severity: 60
         - category: getattr_dynamic
@@ -2184,7 +3122,7 @@ dimensions:
           content: return eval(filled, safe_globals, {})
           file: pyffice/workflows/formulas.py
           line: 134
-          pattern: \beval\(
+          pattern: (?<![\'"])eval\(
           severity: 100
         - category: getattr_dynamic
           content: parent = getattr(self, "_library", None)
@@ -2270,6 +3208,42 @@ dimensions:
           line: 17
           pattern: ast_call
           severity: 80
+        - category: getattr_dynamic
+          content: '"config": getattr(self, "config", None),'
+          file: pyffice/config/config.py
+          line: 111
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: '"config": getattr(self, "config", None),'
+          file: pyffice/config/config.py
+          line: 182
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: '"config": getattr(self, "config", None),'
+          file: pyffice/config/config.py
+          line: 253
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: setattr(self, "config", content["config"])
+          file: pyffice/config/config.py
+          line: 72
+          pattern: setattr\(
+          severity: 60
+        - category: getattr_dynamic
+          content: setattr(self, "config", content["config"])
+          file: pyffice/config/config.py
+          line: 143
+          pattern: setattr\(
+          severity: 60
+        - category: getattr_dynamic
+          content: setattr(self, "config", content["config"])
+          file: pyffice/config/config.py
+          line: 214
+          pattern: setattr\(
+          severity: 60
         - category: dynamic_import
           content: mod = __import__(mod_path, fromlist=[attr])
           file: pyffice/config/__init__.py
@@ -2297,13 +3271,13 @@ dimensions:
         - category: getattr_dynamic
           content: setattr(self, attr, None)
           file: pyffice/web/url.py
-          line: 364
+          line: 366
           pattern: setattr\(
           severity: 60
         - category: getattr_dynamic
           content: setattr(self, attr_name, new_value)
           file: pyffice/web/url.py
-          line: 447
+          line: 449
           pattern: setattr\(
           severity: 60
         - category: dynamic_import
@@ -2318,6 +3292,60 @@ dimensions:
           line: 25
           pattern: ast_call
           severity: 80
+        - category: getattr_dynamic
+          content: openpyxl_charts = getattr(ws, "_charts", []) or []
+          file: pyffice/matrix/matrix.py
+          line: 519
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: anchor = getattr(openpyxl_chart, "anchor", None)
+          file: pyffice/matrix/matrix.py
+          line: 577
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: _from = getattr(anchor, "_from", None)
+          file: pyffice/matrix/matrix.py
+          line: 579
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: '"from_col": getattr(_from, "col", None),'
+          file: pyffice/matrix/matrix.py
+          line: 582
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: '"from_row": getattr(_from, "row", None),'
+          file: pyffice/matrix/matrix.py
+          line: 583
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: _to = getattr(anchor, "to", None)
+          file: pyffice/matrix/matrix.py
+          line: 585
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: position["to_col"] = getattr(_to, "col", None)
+          file: pyffice/matrix/matrix.py
+          line: 587
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: position["to_row"] = getattr(_to, "row", None)
+          file: pyffice/matrix/matrix.py
+          line: 588
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
+        - category: getattr_dynamic
+          content: series_list = getattr(openpyxl_chart, "series", []) or []
+          file: pyffice/matrix/matrix.py
+          line: 595
+          pattern: getattr\([^,]+,\s*['\"][\w]+['\"]
+          severity: 60
         - category: dynamic_import
           content: mod = __import__(mod_path, fromlist=[attr])
           file: pyffice/matrix/__init__.py
@@ -2386,6 +3414,13 @@ dimensions:
     details:
       details:
         findings:
+        - category: post_install_manifest_external_py
+          content: Include of .py files from 'tests' (outside package root)
+          file: MANIFEST.in
+          line: 8
+          recommendation: Including external .py files in MANIFEST.in can ship unexpected
+            executable code.
+          severity: 60
         - category: post_install_main_module
           content: "__main__.py present \u2014 auto-executes on 'python -m pyffice'"
           file: pyffice/__main__.py
@@ -2393,22 +3428,22 @@ dimensions:
           recommendation: __main__.py auto-executes when invoked via python -m. Standard
             for CLIs. Review for unintended side effects.
           severity: 15
-        score: 85
+        score: 40
         status: partial
-      score: 85
+      score: 40
       status: partial
-    score: 85
+    score: 40
     status: partial
   security_ruff:
     details:
       details:
         issues: []
-        score: 80
-        status: pass
-      score: 80
-      status: pass
-    score: 80
-    status: pass
+        score: 0
+        status: fail
+      score: 0
+      status: fail
+    score: 0
+    status: fail
   speed:
     details:
       details:
@@ -2472,13 +3507,13 @@ dimensions:
   testing:
     details:
       details:
-        coverage: 51.546391752577314
+        coverage: 52.083333333333336
         files_with_tests: 50
         score: 90
         status: pass
         test_dir: tests
-        test_file_count: 85
-        total_source_files: 97
+        test_file_count: 88
+        total_source_files: 96
       score: 90
       status: pass
     score: 90
@@ -2486,20 +3521,26 @@ dimensions:
   todo_tracking:
     details:
       details:
-        files_with_todos: 1
+        files_with_todos: 4
         issues:
         - dimension: todo_tracking
           rule: Embedded TODOs require resolution
           severity: medium
-        score: 99
+        score: 96
         status: pass
-        total_todos: 1
+        total_todos: 4
         worst_offenders:
         - count: 1
           file: tests/pyffice_unit/unit/documentTEST.py
-      score: 99
+        - count: 1
+          file: pyffice/updates/updates.py
+        - count: 1
+          file: pyffice/ports/msports.py
+        - count: 1
+          file: pyffice/images/images.py
+      score: 96
       status: pass
-    score: 99
+    score: 96
     status: pass
   type_annotations:
     details:
@@ -2507,9 +3548,9 @@ dimensions:
         issues: []
         score: 100
         status: pass
-        total_functions: 1838
-        typed_functions: 1726
-        untyped_functions: 112
+        total_functions: 1864
+        typed_functions: 1737
+        untyped_functions: 127
       score: 100
       status: pass
     score: 100
@@ -2519,14 +3560,14 @@ dimensions:
       details:
         empty_methods: 2
         examples:
-        - class: PyfficeCloudPort
-          file: pyffice/ports/cloud_ports.py
-          line: 196
-          method: download_file
-        - class: PyfficeCloudPort
-          file: pyffice/ports/cloud_ports.py
-          line: 243
-          method: delete_file
+        - class: PyfficeImage
+          file: pyffice/images/images.py
+          line: 233
+          method: extract_palette
+        - class: PyfficeWebBrowser
+          file: pyffice/web/web.py
+          line: 163
+          method: open_file
         issues:
         - dimension: unfinished_code
           rule: Empty methods need implementation
@@ -2536,6 +3577,23 @@ dimensions:
       score: 90
       status: pass
     score: 90
+    status: pass
+  verify_package:
+    details:
+      details:
+        checks:
+          pep427_compliant:
+            pass: true
+          sdist_build:
+            pass: true
+          wheel_build:
+            pass: true
+        issues: []
+        score: 100
+        status: pass
+      score: 100
+      status: pass
+    score: 100
     status: pass
   wrapper_antipattern:
     details:
@@ -2548,44 +3606,44 @@ dimensions:
       status: pass
     score: 100
     status: pass
-overall_score: 94.79
+overall_score: 91.34
 project: pyffice
 rubric:
-  audit_overall: 94.79
+  audit_overall: 91.34
   categories: []
   max_points: 0
   percentage: 0.0
-  rubric_name: 06a6e527-f98d-7329-8000-249c857b6365
+  rubric_name: 06a7f61e-cf92-718c-8000-ab6ca1ac6898
   rubric_score: 0
   rubric_version: '1.0'
-  score_difference: -94.79
+  score_difference: -91.34
   total_points: 0
   weighted_score: 0
 summary:
-  failing: 0
+  failing: 1
   partial: 5
-  passing: 48
-  tasks_created: 5
-  total_auditors: 11
-  total_dimensions: 53
+  passing: 54
+  tasks_created: 6
+  total_auditors: 13
+  total_dimensions: 60
 test_execution:
-  duration_seconds: 32.83454489707947
-  project_score: 94.79
+  duration_seconds: 45.686413526535034
+  project_score: 91.34
   report_file: /home/solubrew/.hermes/projects/pyffice/FALCON_TEST.yaml
   results:
-    tests_failed: 21
-    tests_passed: 851
-    tests_run: 876
+    tests_failed: 1
+    tests_passed: 920
+    tests_run: 925
     tests_skipped: 3
   runner: falcon
   score_adjustment: 0
   score_threshold: 80.0
   should_run: true
   status: failed
-  status_message: no change (851/876 tests passed)
+  status_message: no change (920/925 tests passed)
   timestamp: ''
 versions:
-  project: 04cf9a9
-  project_status: dirty
-  project_uncommitted_changes: 2
-  sasquatch: a16c01c
+  project: b7d00e6
+  project_status: clean
+  project_uncommitted_changes: 0
+  sasquatch: 3c02a8f
