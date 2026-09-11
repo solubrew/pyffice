@@ -196,14 +196,27 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
         return self
 
     def set_page_home(self, page) -> Self:
-        """Set the page home.
+        """Set the home page.
 
         Args:
             page: Parameter.
 
         Returns:
             Self for chaining.
+
+        T-NEW-069 — guard against ``None`` so callers that pass
+        the result of ``get_active_page()`` before the first
+        load don't AttributeError on ``self.home_page = page``.
+        A None home page is a valid intermediate state
+        (subsequent ``set_page_active`` populates it from the
+        first page's URL).
         """
+        if page is None:
+            logma.debug(
+                "[pyffice.web] set_page_home called with None — "
+                "leaving home_page unchanged"
+            )
+            return self
         if not isinstance(page, PyfficeWebPage):
             page = PyfficeWebPage(page)
             page.load_document()
@@ -301,6 +314,14 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
 
         Returns:
             Self for chaining.
+
+        T-NEW-069 — round-trip fix: persist the full ``pages``
+        list AND the active ``page``. The previous code only
+        wrote ``page`` (the active one), which meant
+        ``load_document`` had no way to restore tab history
+        after a save/load cycle. Now we persist the list (which
+        may be ``None`` or empty for a brand-new document) and
+        load_document can re-populate ``self.pages``.
         """
         doc = super().to_dict()
 
@@ -308,8 +329,20 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
         # doc["data"]["home_page"] = self.home_page.to_dict()
         if self.active_profile is not None:
             doc["data"]["active_profile"] = self.active_profile.to_dict()
-        doc["data"]["page"] = self.active_page.to_dict()
-        # doc["data"]["pages"] = [x.to_dict() for x in self.pages]
+        if getattr(self, "active_page", None) is not None and hasattr(
+            self.active_page, "to_dict"
+        ):
+            doc["data"]["page"] = self.active_page.to_dict()
+        # Persist the full pages list (None-safe — many
+        # intermediate-state docs only have ``active_page``).
+        pages = getattr(self, "pages", None)
+        if pages:
+            doc["data"]["pages"] = [p.to_dict() for p in pages]
+        elif "pages" not in doc["data"]:
+            # Preserve the field's absence vs empty distinction:
+            # empty list means "had pages, all cleared";
+            # missing means "never populated".
+            pass
         return self._canonicalize(doc)
 
 
@@ -569,17 +602,37 @@ class PyfficeWebPage(PyfficeDocument):
 
         Returns:
             Self for chaining.
+
+        T-NEW-069 — defensive round-trip:
+
+        * ``self.history`` may be ``None`` or a plain ``list``
+          (per ``add_history`` line 348); call ``.to_dict()``
+          only when the object supports it, else fall back
+          to ``list(self.history or [])`` or ``[]``.
+        * ``self.active_url.to_dict()`` now exists
+          (added to ``PyfficeURL``); guard against ``None``
+          (a freshly-init page without a URL yet).
         """
         doc = super().to_dict()
         doc["data"] = {
             "pinned_on": self.pinned_on_dttm,
             "last_refresh": self.last_refresh,
-            "history": self.history.to_dict(),
+            "history": (
+                self.history.to_dict()
+                if self.history is not None
+                and hasattr(self.history, "to_dict")
+                else list(self.history or [])
+            ),
             "snapshots": self.snapshots,
             "versions": self.versions,
             "level_of_trust": self.trust,
         }
-        doc["data"]["url"] = self.active_url.to_dict()
+        if getattr(self, "active_url", None) is not None and hasattr(
+            self.active_url, "to_dict"
+        ):
+            doc["data"]["url"] = self.active_url.to_dict()
+        else:
+            doc["data"]["url"] = None
 
         # doc["data"]["profile"] = self.active_profile.to_dict()
         doc["data"]["source"] = None

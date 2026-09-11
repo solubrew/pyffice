@@ -449,6 +449,97 @@ class PyfficeURL(PyfficeUnit):
             setattr(self, attr_name, new_value)
         return self
 
+    # T-NEW-069 — PyfficeURL was missing ``to_dict`` /
+    # ``load_document`` entirely (it inherits from ``PyfficeUnit``,
+    # which is just ``object`` with attribute init). The previous
+    # ``PyfficeWebPage.to_dict`` call site
+    # (``self.active_url.to_dict()``) would raise AttributeError on
+    # save. These methods round-trip every URL component used by the
+    # save/load flow + the URL inspection toolbox.
+    def to_dict(self) -> dict:
+        """Serialize this URL to a dict.
+
+        Returns:
+            A flat dict of URL component attributes, suitable for
+            embedding inside ``PyfficeWebPage.to_dict()['url']`` and
+            round-tripping through ``load_document``.
+        """
+        url_attributes = [
+            "active_url",
+            "block_ads",
+            "block_adult",
+            "default_url",
+            "domain",
+            "filters",
+            "found_url",
+            "fragment",
+            "geofence_active",
+            "geofence_region",
+            "given_url",
+            "hostname",
+            "level_of_trust",
+            "link_style",
+            "netloc",
+            "path",
+            "parameters",
+            "parsed",
+            "query",
+            "password",
+            "port",
+            "redirect_affiliates",
+            "scheme",
+            "secure_url",
+            "sub_domain",
+            "no_www",
+            "username",
+            "whois",
+        ]
+        doc = {}
+        for attr in url_attributes:
+            doc[attr] = getattr(self, attr, None)
+        return doc
+
+    def load_document(self, document=None) -> Self:
+        """Restore URL component attributes from a dict payload.
+
+        Args:
+            document: dict of URL component attributes (as produced
+                by ``to_dict``). ``None`` is a no-op.
+
+        Returns:
+            Self for chaining.
+        """
+        if document is None:
+            return self
+        if not isinstance(document, dict):
+            logma.warning(
+                f"[pyffice.url] load_document expected dict, "
+                f"got {type(document).__name__}: {document!r}"
+            )
+            return self
+        for attr, value in document.items():
+            setter = f"set_{attr}"
+            if not hasattr(self, setter):
+                # Direct assignment for read-only attributes
+                # (``parsed``, ``active_url``, etc. — see the
+                # `_initialize_attributes` list).
+                try:
+                    setattr(self, attr, value)
+                except Exception:
+                    logma.debug(
+                        f"[pyffice.url] load_document: could not "
+                        f"set {attr} directly"
+                    )
+                continue
+            try:
+                getattr(self, setter)(value)
+            except Exception as _exc:
+                logma.warning(
+                    f"[pyffice.url] load_document: setter "
+                    f"{setter}({value!r}) failed: {_exc}"
+                )
+        return self
+
 
 class PyfficeURLLibrary(PyfficeDocumentManager):
     """URL Library is a data object for integrating affiliate links into the web apps and browsing features provided
