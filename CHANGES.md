@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **URL history persistence + round-trip restore (T-NEW-069)** — `PyfficeURL` now
+  persists `url_history` (deduped, most-recent-first) through the PyfficeUnit save/load
+  envelope and restores `active_url`/`given_url`/`found_url` fields on `_parse`
+  round-trip, so a document re-open keeps the browser's navigation state. Commit
+  `64d4518` (gamma, 2026-09-11). Consumer-facing via `NchantdOfficeWebBrowser` /
+  `NchantdOfficeAdTab` document restore.
+
 - **PyfficePDF binary storage (T-NEW-159)** -- `get_binary()` no
   longer returns an empty stub. It now returns the stored
   `content["bytes"]` blob when present, or the on-disk bytes from
