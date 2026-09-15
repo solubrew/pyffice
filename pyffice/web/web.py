@@ -178,6 +178,8 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
         if isinstance(page, str):
             url = PyfficeURL(page)
             url.load_unit()
+            if self.home_page is None:
+                self.set_home_page()
             page = {"active_url": url, "home_url": self.home_page.active_url}
         if page is None:
             page = self.pages[0]
@@ -203,20 +205,9 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
 
         Returns:
             Self for chaining.
-
-        T-NEW-069 — guard against ``None`` so callers that pass
-        the result of ``get_active_page()`` before the first
-        load don't AttributeError on ``self.home_page = page``.
-        A None home page is a valid intermediate state
-        (subsequent ``set_page_active`` populates it from the
-        first page's URL).
         """
         if page is None:
-            logma.debug(
-                "[pyffice.web] set_page_home called with None — "
-                "leaving home_page unchanged"
-            )
-            return self
+            page = HOMEPAGE
         if not isinstance(page, PyfficeWebPage):
             page = PyfficeWebPage(page)
             page.load_document()
@@ -329,9 +320,7 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
         # doc["data"]["home_page"] = self.home_page.to_dict()
         if self.active_profile is not None:
             doc["data"]["active_profile"] = self.active_profile.to_dict()
-        if getattr(self, "active_page", None) is not None and hasattr(
-            self.active_page, "to_dict"
-        ):
+        if getattr(self, "active_page", None) is not None and hasattr(self.active_page, "to_dict"):
             doc["data"]["page"] = self.active_page.to_dict()
         # Persist the full pages list (None-safe — many
         # intermediate-state docs only have ``active_page``).
@@ -432,7 +421,7 @@ class PyfficeWebPage(PyfficeDocument):
         self.set_snapshots(document.get("snapshots", []))
         self.set_versions(document.get("versions", []))
         self.set_page_pinned(document.get("pinned", None))
-        self.set_level_of_trust(document.get("level_of_trust", 0))
+        self.set_level_of_trust(document.get("level_of_trust", 0) or 0)
         return self
 
     def get_finger_print(self, content) -> Any:
@@ -619,17 +608,14 @@ class PyfficeWebPage(PyfficeDocument):
             "last_refresh": self.last_refresh,
             "history": (
                 self.history.to_dict()
-                if self.history is not None
-                and hasattr(self.history, "to_dict")
+                if self.history is not None and hasattr(self.history, "to_dict")
                 else list(self.history or [])
             ),
             "snapshots": self.snapshots,
             "versions": self.versions,
             "level_of_trust": self.trust,
         }
-        if getattr(self, "active_url", None) is not None and hasattr(
-            self.active_url, "to_dict"
-        ):
+        if getattr(self, "active_url", None) is not None and hasattr(self.active_url, "to_dict"):
             doc["data"]["url"] = self.active_url.to_dict()
         else:
             doc["data"]["url"] = None

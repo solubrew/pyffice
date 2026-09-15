@@ -21,7 +21,7 @@ import xml.etree.ElementTree as ET
 from typing_extensions import Self
 
 # ======================================3rd Party Library Modules=====================================================||
-
+import html
 
 # ======================================Solutions Brewer Library Modules==============================================||
 from kahndor import kahndor
@@ -32,6 +32,7 @@ from pyffice.items.items import PyfficeTable
 from pyffice.ports.ports import PyfficePort
 from pyffice.script.script import PyfficeScript
 from pyffice.web.web import PyfficeWebBrowser
+from subtrix.utilities import uuid
 
 # ====================================================================================================================||
 HERE = join(dirname(__file__), "")  # ||
@@ -52,7 +53,7 @@ class PyfficePortCherryTree(PyfficePort):
         """"""
         logma.info(f"Init Cherry Tree {cfg}")
         super().__init__(cfg)
-        self.config.override(kahndor.Instruct(pxcfg).select("PyfficePortCherryTree")).override(cfg)
+        self.config.override(kahndor.Instruct(PXCFG).select("PyfficePortCherryTree")).override(cfg)
         logma.info(f"Init Cherry Tree {self.config.dikt}")
         self.nodes = None
         self.root = None
@@ -220,7 +221,10 @@ class PyfficePortCherryTree(PyfficePort):
         Returns:
             Self for chaining.
         """
-        links = extract_urls(text)
+        if text is None:
+            links = None
+        else:
+            links = extract_urls(text)
         logma.info(f"Links: {links}")
         self.links = []
         if links is not None:
@@ -240,15 +244,15 @@ class PyfficePortCherryTree(PyfficePort):
                 cfg = {"document": {"data": {"original_path": link}}}
                 browser = PyfficeWebBrowser(cfg)
                 browser.load_document()
-                browser.set_url_active(link)
+                browser.set_page_active(link)
                 # except Exception as e:
                 #     logma.info(f"Link: {link}")
                 #     continue
-                logma.info(f"Link {browser.to_dict()}")
-                logma.info(f"Active URL {browser.active_url.to_dict()}")
-                if browser.active_url.domain is None:
+                # logma.info(f"Link {browser.to_dict()}")
+                # logma.info(f"Active URL {browser.active_url.to_dict()}")
+                if browser.active_page.active_url.domain is None:
                     continue
-                logma.info(f"Active Link {browser.active_url} {browser.active_url.domain}")
+                # logma.info(f"Active Link {browser.active_url} {browser.active_url.domain}")
                 self.links.append(browser)
         return self
 
@@ -416,6 +420,9 @@ class PyfficePortCherryTree(PyfficePort):
         """
         doc = super().to_dict()
         for node in self.nodes:
+            logma.info(f"Doc {doc}")
+            if "documents" not in doc.get("data", {}).keys():
+                doc["data"]["documents"] = []
             doc["data"]["documents"].append(node)
         return self._canonicalize(doc)
 
