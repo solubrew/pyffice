@@ -52,13 +52,10 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
         """"""
         super().__init__(cfg)
         self.config.override(kahndor.Instruct(pxcfg).select("PyfficeWebBrowser").override(cfg))
-        # self.document = self.config.select("template").override(self.config.select("document").dikt) This causes a new generation of uuids probably a good feature to ensure updated schema but need to work on overrides
         self.active_page = None
         self.active_profile = None
         self.home_page = None
-
         self.pages = None
-
         self.doc_type = "browser"
 
     def add_page(self, page) -> Self:

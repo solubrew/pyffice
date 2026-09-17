@@ -36,7 +36,8 @@ logma.off()
 
 # ====================================================================================================================||
 pxcfg = join(here, "_data_", "url.yaml")
-HOMEPAGE = "https://www.pyffice.com/"
+HOMEPAGE = {"url": "https://www.pyffice.com/"}
+HOMEURL = HOMEPAGE.get("url")
 
 
 class PyfficeURL(PyfficeUnit):
@@ -512,10 +513,7 @@ class PyfficeURL(PyfficeUnit):
         if document is None:
             return self
         if not isinstance(document, dict):
-            logma.warning(
-                f"[pyffice.url] load_document expected dict, "
-                f"got {type(document).__name__}: {document!r}"
-            )
+            logma.warning(f"[pyffice.url] load_document expected dict, " f"got {type(document).__name__}: {document!r}")
             return self
         for attr, value in document.items():
             setter = f"set_{attr}"
@@ -526,18 +524,12 @@ class PyfficeURL(PyfficeUnit):
                 try:
                     setattr(self, attr, value)
                 except Exception:
-                    logma.debug(
-                        f"[pyffice.url] load_document: could not "
-                        f"set {attr} directly"
-                    )
+                    logma.debug(f"[pyffice.url] load_document: could not " f"set {attr} directly")
                 continue
             try:
                 getattr(self, setter)(value)
             except Exception as _exc:
-                logma.warning(
-                    f"[pyffice.url] load_document: setter "
-                    f"{setter}({value!r}) failed: {_exc}"
-                )
+                logma.warning(f"[pyffice.url] load_document: setter " f"{setter}({value!r}) failed: {_exc}")
         return self
 
 
