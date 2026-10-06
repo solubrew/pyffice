@@ -57,17 +57,16 @@ class PyfficeURL(PyfficeUnit):
         """Initialize PyfficeURL with configuration."""
         super().__init__(cfg)
         self.config.override(kahndor.Instruct(pxcfg).select("PyfficeURL").override(cfg))
-
         # Initialize all URL-related attributes
         self._initialize_attributes()
-
-        if self.active_url is not None:
-            self._parse(self.active_url)
+        self.url_string = HOMEURL
+        if self.url_string is not None:
+            self._parse(self.url_string)
         self.doc_type = "url"
 
     def check_pattern(self, pattern) -> Any:
         """Check if pattern exists in any URL variant."""
-        urls_to_check = [self.given_url, self.active_url, self.found_url]
+        urls_to_check = [self.given_url, self.url_string, self.found_url]
         return any(pattern in url for url in urls_to_check if url)
 
     def expand_url(self, url) -> Any:
@@ -137,7 +136,7 @@ class PyfficeURL(PyfficeUnit):
 
     def is_valid(self) -> Any:
         """Validate URL structure."""
-        return self.active_url is not None and self.get_domain() is not None
+        return self.url_string is not None and self.get_domain() is not None
 
     def load_unit(self, unit=None) -> Self:
         """Load configuration from unit dictionary."""
@@ -160,7 +159,7 @@ class PyfficeURL(PyfficeUnit):
         self.set_geofence(unit.get("geofence_region", None), unit.get("geofence_active", False))
 
         # Parse the final URL
-        parse_url = self.active_url or self.config.dikt.get("url", self.default_url)
+        parse_url = self.url_string or self.config.dikt.get("url", self.default_url)
         self._parse(parse_url)
 
         return self
@@ -178,12 +177,12 @@ class PyfficeURL(PyfficeUnit):
         if url is None:
             url = self.default_url
 
-        if url != self.active_url:
-            self.add_change("active_url", self.active_url, url)
-            self.active_url = self.expand_url(url)
+        if url != self.url_string:
+            self.add_change("active_url", self.url_string, url)
+            self.url_string = self.expand_url(url)
             self.set_secure()
 
-        logma.info(f"Active Url {self.active_url}")
+        logma.info(f"Active Url {self.url_string}")
         return self
 
     def set_block_ads(self, block_ads) -> Self:
@@ -272,14 +271,14 @@ class PyfficeURL(PyfficeUnit):
 
     def set_secure(self) -> Self:
         """Convert URL to HTTPS."""
-        logma.info(f"Active Url {self.active_url}")
-        if self.active_url.startswith(self.HTTP_PREFIX):
-            self.secure_url = self.active_url.replace(self.HTTP_PREFIX, self.HTTPS_PREFIX)
-        elif self.active_url.startswith(self.HTTPS_PREFIX):
-            self.secure_url = self.active_url
+        logma.info(f"Active Url {self.url_string}")
+        if self.url_string.startswith(self.HTTP_PREFIX):
+            self.secure_url = self.url_string.replace(self.HTTP_PREFIX, self.HTTPS_PREFIX)
+        elif self.url_string.startswith(self.HTTPS_PREFIX):
+            self.secure_url = self.url_string
         else:
-            self.secure_url = f"{self.HTTPS_PREFIX}{self.active_url}"
-        self.active_url = self.secure_url
+            self.secure_url = f"{self.HTTPS_PREFIX}{self.url_string}"
+        self.url_string = self.secure_url
         return self
 
     def set_scheme(self, scheme) -> Self:
@@ -305,12 +304,12 @@ class PyfficeURL(PyfficeUnit):
 
     def remove_www(self) -> Self:
         """Remove www prefix from URL."""
-        if self.active_url.startswith("www."):
-            self.no_www = self.active_url[4:]
-        elif self.active_url.startswith("http://www."):
-            self.no_www = f"http://{self.active_url[11:]}"
-        elif self.active_url.startswith("https://www."):
-            self.no_www = f"https://{self.active_url[12:]}"
+        if self.url_string.startswith("www."):
+            self.no_www = self.url_string[4:]
+        elif self.url_string.startswith("http://www."):
+            self.no_www = f"http://{self.url_string[11:]}"
+        elif self.url_string.startswith("https://www."):
+            self.no_www = f"https://{self.url_string[12:]}"
         return self
 
     def validate(self) -> None:
@@ -319,7 +318,7 @@ class PyfficeURL(PyfficeUnit):
 
     def verify(self) -> Any:
         """Attempt to ensure web address is correct."""
-        if hasattr(self, "library") and self.library.verify(self.active_url):
+        if hasattr(self, "library") and self.library.verify(self.url_string):
             return True
         return False
 
@@ -329,8 +328,8 @@ class PyfficeURL(PyfficeUnit):
 
     def _ensure_parsed(self) -> None:
         """Ensure URL is parsed before accessing components."""
-        if not self.parsed and self.active_url:
-            self._parse(self.active_url)
+        if not self.parsed and self.url_string:
+            self._parse(self.url_string)
 
     def _initialize_attributes(self) -> None:
         """Initialize all URL component attributes to None."""

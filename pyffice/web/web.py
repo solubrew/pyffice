@@ -140,8 +140,10 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
         self.set_page_active(document.get("active_page", None))
         return self
 
-    def open_file(self, file=None):
+    def open_file(self, file_path, open_=True):
         """"""
+        super().open_file(file_path, open_)
+        # TODO implement direct file opening of .htm/.html/.xhtml files
 
     def set_home_page(self, cfg=None):
         """"""
@@ -258,10 +260,6 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
         cfg = {"profile": profile}
         profile = PyfficeWebProfile(cfg)
         profile.load_document()
-        # if self.active_page is None:
-        #     if len(self.profile_manager.profiles) == 0:
-        #         self.add_profile(profile)
-        #     profile = self.profile_manager.profiles[0]
         if profile != self.active_profile:
             self.add_change("active_profile", self.active_profile, profile)
             self.active_profile = profile
@@ -275,27 +273,6 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
         """
         self.update_document_time()
         return self
-
-    # def set_url_active(self, url):
-    #     """"""
-    #     logma.info(f"set_url_active: {url}")
-    #     active_url = PyfficeURL({"unit": {"original_path": url, "given_url": url}})
-    #     active_url.load_unit()
-    #     logma.info(f"set_url_active: {active_url.to_dict()}")
-    #     if active_url != self.active_url:
-    #         self.add_change("active_url", self.active_url, active_url)
-    #         self.active_url = active_url
-    #     logma.info(f"set_url_active: {self.active_url.to_dict()}")
-    #     return self
-    #
-    # def set_url_home(self, url):
-    #     """"""
-    #     home_url = PyfficeURL({"unit": {"original_path": url, "given_url": url}})
-    #     home_url.load_unit()
-    #     if home_url != self.home_url:
-    #         self.add_change("home_url", self.home_url, home_url)
-    #         self.home_url = home_url
-    #     return self
 
     def to_dict(self) -> Self:
         """Convert this document to dict.
@@ -312,9 +289,6 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
         load_document can re-populate ``self.pages``.
         """
         doc = super().to_dict()
-
-        # doc["data"]["unit"] = self.active_url.to_dict()["unit"]
-        # doc["data"]["home_page"] = self.home_page.to_dict()
         if self.active_profile is not None:
             doc["data"]["active_profile"] = self.active_profile.to_dict()
         if getattr(self, "active_page", None) is not None and hasattr(self.active_page, "to_dict"):
