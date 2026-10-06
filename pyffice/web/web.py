@@ -645,7 +645,19 @@ class PyfficeWebPage(PyfficeDocument):
              attribute) AND ``url_string`` (the canonical rename)
              so existing consumers and migrated consumers agree.
         """
+        # T-NEW-079 followup (2026-10-06 regression hotfix): the old
+        # implementation called ``PyfficeURL(None)`` even for a None
+        # url, which produced a HOMEURL-default ``active_url`` object
+        # — every downstream consumer (``get_url_document()``,
+        # widget ``initModel`` reading ``active_url.url_string``,
+        # ``NchantdURL`` construction) relies on ``active_url`` being
+        # a real PyfficeURL, never None. The early ``return self``
+        # introduced here broke fresh/empty documents (no saved URL
+        # yet) with AttributeError cascades at startup. Restore the
+        # invariant: None url ⇒ default the object to HOMEURL.
         if url is None:
+            if self.active_url is None:
+                self.active_url = PyfficeURL(None)
             return self
         # Normalise the input to a cfg that ``load_unit`` reads.
         # Accepted shapes: bare str, {"url": str}, a full URL
