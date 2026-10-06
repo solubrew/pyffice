@@ -54,14 +54,41 @@ class PyfficeURL(PyfficeUnit):
     DEFAULT_SEARCH_URL = "https://www.duckduckgo.com/"
 
     def __init__(self, cfg=None) -> None:
-        """Initialize PyfficeURL with configuration."""
+        """Initialize PyfficeURL with configuration.
+
+        T-NEW-079: a positional ``str`` (the most common
+        construction shape — ``PyfficeURL("https://x.com/")``) was
+        silently dropped. The ctor assigned ``url_string = HOMEURL``
+        unconditionally and parsed HOMEURL, so any caller relying
+        on positional strings got a stuck-at-default URL. Now we
+        route a positional str (or a dict cfg carrying ``url`` /
+        ``url_string`` / ``active_url``) through ``load_unit``, the
+        canonical populate path.
+        """
         super().__init__(cfg)
         self.config.override(kahndor.Instruct(pxcfg).select("PyfficeURL").override(cfg))
         # Initialize all URL-related attributes
         self._initialize_attributes()
-        self.url_string = HOMEURL
-        if self.url_string is not None:
-            self._parse(self.url_string)
+        # Resolve the seed URL from cfg (positional str, dict with
+        # ``url`` / ``url_string`` / ``active_url``, or None).
+        seed = None
+        if isinstance(cfg, str):
+            seed = cfg
+        elif isinstance(cfg, dict):
+            seed = (
+                cfg.get("url")
+                or cfg.get("url_string")
+                or cfg.get("active_url")
+            )
+        if seed is not None:
+            # Bypass __init__'s HOMEURL default by calling
+            # ``load_unit`` — it pulls the URL through the normal
+            # parse path (``set_active_url`` → ``_parse``).
+            self.load_unit({"url": seed})
+        else:
+            self.url_string = HOMEURL
+            if self.url_string is not None:
+                self._parse(self.url_string)
         self.doc_type = "url"
 
     def check_pattern(self, pattern) -> Any:
@@ -332,9 +359,17 @@ class PyfficeURL(PyfficeUnit):
             self._parse(self.url_string)
 
     def _initialize_attributes(self) -> None:
-        """Initialize all URL component attributes to None."""
+        """Initialize all URL component attributes to None.
+
+        T-NEW-079: ``url_string`` is initialized to HOMEURL in
+        ``__init__`` (post-init), but must also be registered here
+        so the attribute exists on every fresh PyfficeURL before
+        that assignment, and so ``_load_url_attributes`` /
+        ``load_unit`` round-trips can read it.
+        """
         url_attributes = [
             "active_url",
+            "url_string",
             "block_ads",
             "block_adult",
             "default_url",
@@ -466,6 +501,7 @@ class PyfficeURL(PyfficeUnit):
         """
         url_attributes = [
             "active_url",
+            "url_string",
             "block_ads",
             "block_adult",
             "default_url",

@@ -138,6 +138,18 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
         self.set_profile_active(document.get("active_profile", None))
         self.set_pages(document.get("pages", None))
         self.set_page_active(document.get("active_page", None))
+        # T-NEW-079: the nchantdoffice widget stores the active page
+        # payload under ``data.content`` (its ``get_content()`` = 
+        # ``{"content": active_page.to_dict()}``); the generic
+        # ``pages`` / ``active_page`` keys are absent from that blob
+        # shape. Re-hydrate the active page from ``data.content``
+        # when present so a tab-return rebuild actually restores
+        # the last URL (previously the rebuilt browser fell back to
+        # HOMEPAGE and the widget then read the empty default).
+        data = document.get("data") if isinstance(document, dict) else None
+        content = data.get("content") if isinstance(data, dict) else None
+        if isinstance(content, dict):
+            self.set_page_active(content)
         return self
 
     def open_file(self, file_path, open_=True):
@@ -173,18 +185,45 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
 
         Returns:
             Self for chaining.
+
+        T-NEW-079: the previous implementation called
+        ``PyfficeURL(page)`` positionally and then
+        ``url.load_unit()`` with no cfg. Both no-op'd: the
+        PyfficeURL constructor doesn't read a positional str,
+        and ``load_unit()`` with no args defaulted to the
+        config's unit — which had no URL — so the URL ended
+        up as HOMEURL. Now we feed the URL into ``load_unit``
+        via the same ``{"url": ...}`` cfg shape that
+        ``set_url`` / ``load_document`` use, keeping the
+        serialise/parse symmetric across the codebase.
         """
         if isinstance(page, str):
-            url = PyfficeURL(page)
-            url.load_unit()
+            url = PyfficeURL(None)
+            url.load_unit({"url": page})
+            # T-NEW-079: the previous code called
+            # ``self.set_home_page()`` here, which actually
+            # populates ``self.pages`` (a list) — leaving
+            # ``self.home_page`` as None. The very next line
+            # read ``self.home_page.active_url`` and crashed
+            # on every first navigation. The canonical
+            # ``home_page`` setter is ``set_page_home`` (note
+            # the order of the two words). Wire that one.
             if self.home_page is None:
-                self.set_home_page()
-            page = {"active_url": url, "home_url": self.home_page.active_url}
+                self.set_page_home(None)
+            # Canonical cfg key is ``url`` — ``load_document``
+            # reads ``document["url"]`` / ``document["data"]["url"]``,
+            # never ``active_url``.
+            page = {"url": url.url_string}
         if page is None:
             page = self.pages[0]
         if isinstance(page, dict):
-            page = PyfficeWebPage(page)
-            page.load_document()
+            # T-NEW-079: pass the dict through ``load_document``
+            # (the canonical restore path). The old
+            # ``PyfficeWebPage(page); page.load_document()`` pair
+            # discarded the cfg — every dict became a HOMEPAGE page.
+            page_obj = PyfficeWebPage(None)
+            page_obj.load_document(page)
+            page = page_obj
             if page != self.active_page:
                 self.add_change("active_page", self.active_page, page)
                 self.active_page = page
@@ -228,9 +267,15 @@ class PyfficeWebBrowser(PyfficeDocumentManager):
             pages = [{"page": self.home_page}]  # , "profile": self.active_profile.did}]
         page_objs = []
         for page in pages:
-            page = PyfficeWebPage(page)
-            page.load_document()
-            page_objs.append(page)
+            # T-NEW-079: feed the saved page dict through
+            # ``load_document`` (the canonical restore path) so
+            # the persisted URL / history are honoured. The old
+            # ``PyfficeWebPage(page); page.load_document()`` pair
+            # threw the cfg away — ``load_document()`` with no
+            # args rebuilt every page at HOMEPAGE.
+            page_obj = PyfficeWebPage(None)
+            page_obj.load_document(page)
+            page_objs.append(page_obj)
         if page_objs != self.pages:
             self.add_change("pages", self.pages, page_objs)
             self.pages = page_objs
@@ -382,12 +427,51 @@ class PyfficeWebPage(PyfficeDocument):
 
         Returns:
             Self for chaining.
+
+        T-NEW-079: the previous implementation read
+        ``document.get("url", None)`` from the OUTER dict and
+        passed that to ``set_url``. The serialised form
+        (produced by ``to_dict`` / ``_canonicalize``) puts the
+        URL dict under ``document["data"]["url"]["url_string"]``
+        — not at the top level — so the lookup returned
+        ``None`` on every reload and the URL silently reverted
+        to HOMEPAGE. Now we accept either the outer or inner
+        shape: the page-canonical ``document["data"]["url"]``
+        dict first, then fall back to the legacy outer ``url``.
+        The URL is restored via ``set_url`` (or directly when
+        the dict carries ``url_string`` so we don't re-parse).
         """
         if document is None:
             document = {}
+        # T-NEW-079: the nchantdoffice widget's ``get_content()``
+        # wraps the page payload under a ``content`` key (the
+        # doc_media_content blob shape). Unwrap it before
+        # continuing so the URL/history restore paths can find
+        # their keys.
+        if isinstance(document, dict) and isinstance(document.get("content"), dict):
+            document = {**document, **document["content"]}
+        # T-NEW-079: the widget's restore path (browsers.py:101)
+        # calls ``page.load_document(URL.to_dict())`` — passing
+        # the FLAT URL dict directly (no ``data`` / ``url``
+        # wrapper). Detect that shape and route through
+        # ``set_url`` so the URL fields land correctly.
+        if isinstance(document, dict) and (
+            "url_string" in document or "active_url" in document
+        ) and "data" not in document and "url" not in document and "content" not in document:
+            self.set_url(document)
+            return self
         super().load_document(document)
         self.set_history(document.get("history", None), document.get("max_items", 10))
-        self.set_url(document.get("url", None))
+        # T-NEW-079: read the URL from the canonical position.
+        inner_url = None
+        data = document.get("data") if isinstance(document, dict) else None
+        if isinstance(data, dict):
+            url_blob = data.get("url")
+            if isinstance(url_blob, dict):
+                inner_url = url_blob.get("url_string") or url_blob.get("active_url")
+        legacy_url = document.get("url", None) if isinstance(document, dict) else None
+        url = inner_url or legacy_url
+        self.set_url(url)
         self.set_home_url(document.get("home_url", None))
         self.set_snapshots(document.get("snapshots", []))
         self.set_versions(document.get("versions", []))
@@ -534,13 +618,62 @@ class PyfficeWebPage(PyfficeDocument):
 
         Returns:
             Self for chaining.
+
+        T-NEW-079: navigation was permanently disabled after the
+        first ``load_document`` because ``set_page_pinned(None)``
+        stamps ``pinned_on_dttm = now()`` and this guard then
+        refused every subsequent ``set_url`` call — the live
+        navigation reached the engine (engine.load) but never the
+        document model, so on tab-switch + reopen the page was
+        always restored from the original home URL.
+
+        Also: the previous implementation called
+        ``PyfficeURL(url)`` positionally, but the constructor
+        signature is ``PyfficeURL(cfg=None)`` and a bare string was
+        stored verbatim (no parse), and the result was assigned
+        only to the legacy ``active_url`` slot — the renamed
+        ``url_string`` stayed at its initial value, so any
+        downstream consumer reading the new attribute saw stale
+        data.
+
+        The fix:
+          1. Remove the ``pinned_on_dttm`` guard (the page is
+             always navigable; pin-state is a separate concept).
+          2. Normalise the input — bare str or dict cfg both flow
+             through ``PyfficeURL`` properly via ``set_active_url``.
+          3. Mirror the new URL into BOTH ``active_url`` (legacy
+             attribute) AND ``url_string`` (the canonical rename)
+             so existing consumers and migrated consumers agree.
         """
-        if self.pinned_on_dttm is None:
-            active_url = PyfficeURL(url)
-            if active_url != self.active_url:
-                self.add_history(self.active_url)
-                self.add_change("url", self.active_url, active_url)
-                self.active_url = active_url
+        if url is None:
+            return self
+        # Normalise the input to a cfg that ``load_unit`` reads.
+        # Accepted shapes: bare str, {"url": str}, a full URL
+        # blob dict (``url_string``/``active_url`` key — e.g. the
+        # payload produced by ``PyfficeURL.to_dict``).
+        if isinstance(url, dict):
+            if "url" not in url:
+                url = {
+                    "url": url.get("url_string") or url.get("active_url") or url.get("given_url"),
+                }
+            cfg = url
+        else:
+            cfg = {"url": url}
+        # Parse through the canonical PyfficeURL path (``__init__``
+        # does NOT read cfg["url"]; ``load_unit`` is the proper
+        # entry that populates scheme / host / domain components).
+        new_url = PyfficeURL(None)
+        new_url.load_unit(cfg)
+        # If the URL string didn't change, still ensure both
+        # attribute slots agree (defends against partial rename
+        # regressions in subclasses).
+        existing = getattr(self.active_url, "url_string", None) if self.active_url is not None else None
+        if new_url.url_string == existing:
+            return self
+        # Record history + change-event before mutation.
+        self.add_history(self.active_url)
+        self.add_change("url", self.active_url, new_url)
+        self.active_url = new_url
         return self
 
     def set_versions(self, versions) -> Self:
